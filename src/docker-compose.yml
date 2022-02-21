@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+  catalogdb:
+    image: mongo
+
+  basketdb:
+    image: redis:alpine
+
+  portainer:
+    image: portainer/portainer-ce
+
+  dolcecuore.services.basket.api:
+    image: ${DOCKER_REGISTRY-}dolcecuoreservicesbasketapi
+    build:
+      context: .
+      dockerfile: Services.Basket/Dolcecuore.Services.Basket.Api/Dockerfile
+
+  dolcecuore.services.catalog.api:
+    image: ${DOCKER_REGISTRY-}dolcecuoreservicescatalogapi
+    build:
+      context: .
+      dockerfile: Services.Catalog/Dolcecuore.Services.Catalog.Api/Dockerfile
+
+volumes:
+  mongo_data:
+  portainer_data:
