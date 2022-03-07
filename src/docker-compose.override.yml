@@ -64,7 +64,7 @@ services:
     environment:
       - "Redis:ConnectionString=localhost:6379"
       - ASPNETCORE_ENVIRONMENT=Development
-
+      - "Grpc:DiscountUrl=discount.grpc"
     depends_on:
         - basketdb
     ports:
@@ -80,3 +80,12 @@ services:
     ports:
       - "8002:80"
 
+  dolcecuore.services.discount.grpc:
+    container_name: discount.grpc
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "Server=localhost;Port=5432;Database=DiscountDb;User Id=admin;Password=admin"
+    depends_on:
+      - discountdb
+    ports:
+      - "8003:80"

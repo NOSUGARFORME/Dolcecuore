@@ -1,5 +1,6 @@
 using System.Net;
 using System.Threading.Tasks;
+using Dolcecuore.Services.Basket.Api.GrpcServices;
 using Dolcecuore.Services.Basket.Api.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +11,12 @@ namespace Dolcecuore.Services.Basket.Api.Controllers
     public class BasketController : ControllerBase
     {
         private readonly IBasketRepository _basketRepository;
+        private readonly DiscountGrpcService _discountGrpcService;
 
-        public BasketController(IBasketRepository basketRepository)
+        public BasketController(IBasketRepository basketRepository, DiscountGrpcService discountGrpcService)
         {
             _basketRepository = basketRepository;
+            _discountGrpcService = discountGrpcService;
         }
         
         [HttpGet("{userName}", Name = "GetBasket")]
@@ -28,6 +31,12 @@ namespace Dolcecuore.Services.Basket.Api.Controllers
         [ProducesResponseType(typeof(Entities.Basket), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<Entities.Basket>> UpdateBasket([FromBody] Entities.Basket basket)
         {
+            foreach (var item in basket.Items)
+            {
+                var coupon = await _discountGrpcService.GetDiscount(item.ProductName);
+                item.Price -= coupon.Amount;
+            }
+        
             return Ok(await _basketRepository.UpdateBasket(basket));
         }
         
