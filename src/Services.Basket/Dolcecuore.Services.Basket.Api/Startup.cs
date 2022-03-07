@@ -1,5 +1,8 @@
+using System;
+using Dolcecuore.Services.Basket.Api.GrpcServices;
 using Dolcecuore.Services.Basket.Api.Repositories;
 using Dolcecuore.Services.Basket.Api.Repositories.Interfaces;
+using Dolcecuore.Services.Discount.Grpc.Protos;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -24,8 +27,12 @@ namespace Dolcecuore.Services.Basket.Api
             {
                 opts.Configuration = Configuration["Redis:ConnectionString"];
             });
+            
             services.AddScoped<IBasketRepository, BasketRepository>();
-
+            services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(
+                opts => opts.Address = new Uri(Configuration["Grpc:DiscountUrl"]));
+            services.AddScoped<DiscountGrpcService>();
+            
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

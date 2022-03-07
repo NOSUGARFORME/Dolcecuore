@@ -33,6 +33,12 @@ services:
     build:
       context: .
       dockerfile: Services.Discount/Dolcecuore.Services.Discount.Api/Dockerfile
+      
+  dolcecuore.services.discount.grpc:
+    image: ${DOCKER_REGISTRY-}dolcecuoreservicesdiscountgrpc
+    build:
+      context: .
+      dockerfile: Services.Discount/Dolcecuore.Services.Discount.Grpc/Dockerfile
 
 volumes:
   mongo_data:
