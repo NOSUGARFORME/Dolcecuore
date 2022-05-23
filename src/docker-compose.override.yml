@@ -33,7 +33,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin
       PGADMIN_DEFAULT_PASSWORD: admin
     volumes:
-      - pgadmin:/root/.pgadmin
+      - pgadmin_data:/root/.pgadmin
       - ./servers.json:/pgadmin4/servers.json
     ports:
       - "5050:80"
