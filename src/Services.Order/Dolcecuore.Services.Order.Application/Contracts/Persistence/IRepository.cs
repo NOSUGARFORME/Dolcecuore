@@ -17,7 +17,7 @@ public interface IRepository<TEntity> where TEntity : EntityBase
     Task<IReadOnlyList<TEntity>> GetAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-        List<Expression<Func<TEntity, object>>> includes = null,
+        List<Expression<Func<TEntity, object>>>? includes = null,
         bool disableTracking = true);
 
     Task<TEntity> GetByIdAsync(int id);
