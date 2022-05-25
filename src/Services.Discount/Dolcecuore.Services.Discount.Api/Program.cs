@@ -1,3 +1,4 @@
+using Dolcecuore.Services.Discount.Api.Extensions;
 using Dolcecuore.Services.Discount.Api.Repositories;
 using Dolcecuore.Services.Discount.Api.Repositories.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -16,6 +17,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+app.MigrateDatabase<Program>();
 
 if (app.Environment.IsDevelopment())
 {

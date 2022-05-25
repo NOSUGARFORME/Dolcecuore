@@ -19,7 +19,7 @@ services:
     container_name: discountdb
     environment:
       - POSTGRES_USER=admin
-      - POSTGRES_PASWWORD=admin
+      - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=DiscountDb
     restart: always
     ports:
@@ -41,39 +41,39 @@ services:
     container_name: catalog.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - "Database:ConnectionString=mongodb://catalogdb:27017"
+      - Mongo__ConnectionString=mongodb://catalogdb:27017
     depends_on:
       - catalogdb
     ports:
-      - "8000:80"
+      - "8001:80"
 
   dolcecuore.services.basket.api:
     container_name: basket.api
     environment:
-      - "Redis:ConnectionString=localhost:6379"
+      - Redis__ConnectionString=basketdb:6379
       - ASPNETCORE_ENVIRONMENT=Development
-      - "Grpc:DiscountUrl=discount.grpc"
+      - Grpc__DiscountUrl=http://dolcecuore.services.discount.grpc
     depends_on:
         - basketdb
     ports:
-      - "8001:80"
+      - "8002:80"
 
   dolcecuore.services.discount.api:
     container_name: discount.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - "Server=localhost;Port=5432;Database=DiscountDb;User Id=admin;Password=admin"
+      - Postgres__ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=admin;Password=admin
     depends_on:
       - discountdb
     ports:
-      - "8002:80"
+      - "8003:80"
 
   dolcecuore.services.discount.grpc:
     container_name: discount.grpc
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - "Server=localhost;Port=5432;Database=DiscountDb;User Id=admin;Password=admin"
+      - Postgres__ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=admin;Password=admin
     depends_on:
       - discountdb
     ports:
-      - "8003:80"
+      - "8004:80"

@@ -40,11 +40,12 @@ namespace Dolcecuore.Services.Discount.Api.Controllers
             return Ok(await _discountRepository.UpdateDiscount(coupon));
         }
 
-        [HttpDelete("{productName}", Name = "DeleteDicsount")]
+        [HttpDelete("{productName}", Name = "DeleteDiscount")]
         [ProducesResponseType(typeof(Coupon), (int) HttpStatusCode.OK)]
         public async Task<ActionResult<bool>> DeleteDiscount(string productName)
         {
-            return Ok(await _discountRepository.DeleteDiscount(productName));
+            await _discountRepository.DeleteDiscount(productName);
+            return NoContent();
         }
     }
 }

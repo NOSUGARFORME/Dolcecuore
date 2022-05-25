@@ -41,7 +41,7 @@ namespace Dolcecuore.Services.Discount.Api.Repositories
                 (_configuration["Postgres:ConnectionString"]);
 
             var affected = await connection.ExecuteAsync
-                ("INSERT INTO Coupon (ProductName, Description, Amount) VALUES (@ProductName, @Discount, @Amount)",
+                ("INSERT INTO Coupon (ProductName, Description, Amount) VALUES (@ProductName, @Description, @Amount);",
                     new {coupon.ProductName, coupon.Description, coupon.Amount});
 
             return affected is not 0;

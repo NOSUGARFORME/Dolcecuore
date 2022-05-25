@@ -1,3 +1,4 @@
+using Dolcecuore.Services.Discount.Grpc.Extensions;
 using Dolcecuore.Services.Discount.Grpc.Repositories;
 using Dolcecuore.Services.Discount.Grpc.Repositories.Interfaces;
 using Dolcecuore.Services.Discount.Grpc.Services;
@@ -13,6 +14,8 @@ builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
 builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
+
+app.MigrateDatabase<Program>();
 
 if (app.Environment.IsDevelopment())
 {
