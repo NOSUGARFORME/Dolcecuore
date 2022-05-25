@@ -21,6 +21,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dolcecuore.Services.Discoun
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dolcecuore.Services.Discount.Grpc", "Services.Discount\Dolcecuore.Services.Discount.Grpc\Dolcecuore.Services.Discount.Grpc.csproj", "{F100BEC9-1CDE-4883-BEFA-E874EA34749A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Order", "Order", "{8077189E-FC51-4ED1-A312-2B689E0E402D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dolcecuore.Services.Order.Api", "Services.Order\Dolcecuore.Services.Order.Api\Dolcecuore.Services.Order.Api.csproj", "{F56FFF6A-9CC4-4E0C-A447-4D1FF379764B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +51,10 @@ Global
 		{F100BEC9-1CDE-4883-BEFA-E874EA34749A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F100BEC9-1CDE-4883-BEFA-E874EA34749A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F100BEC9-1CDE-4883-BEFA-E874EA34749A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F56FFF6A-9CC4-4E0C-A447-4D1FF379764B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F56FFF6A-9CC4-4E0C-A447-4D1FF379764B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F56FFF6A-9CC4-4E0C-A447-4D1FF379764B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F56FFF6A-9CC4-4E0C-A447-4D1FF379764B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +67,8 @@ Global
 		{048489E2-71D6-48A7-A568-829FAEF28571} = {3C03B5A8-974E-4174-A581-A9782C7F7465}
 		{1A92E311-DAD5-4551-A66D-311F7D00A7FA} = {048489E2-71D6-48A7-A568-829FAEF28571}
 		{F100BEC9-1CDE-4883-BEFA-E874EA34749A} = {048489E2-71D6-48A7-A568-829FAEF28571}
+		{8077189E-FC51-4ED1-A312-2B689E0E402D} = {3C03B5A8-974E-4174-A581-A9782C7F7465}
+		{F56FFF6A-9CC4-4E0C-A447-4D1FF379764B} = {8077189E-FC51-4ED1-A312-2B689E0E402D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {12F365FD-9AB6-4CE8-B864-8485EBEAFD2D}
