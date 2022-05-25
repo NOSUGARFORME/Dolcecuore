@@ -9,10 +9,10 @@
     <DockerServiceName>dolcecuore.services.catalog.api</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="docker-compose.override.yml">
-      <DependentUpon>docker-compose.yml</DependentUpon>
+    <None Include="docker-compose.override.yaml">
+      <DependentUpon>docker-compose.yaml</DependentUpon>
     </None>
-    <None Include="docker-compose.yml" />
+    <None Include="docker-compose.yaml" />
     <None Include=".dockerignore" />
   </ItemGroup>
 </Project>

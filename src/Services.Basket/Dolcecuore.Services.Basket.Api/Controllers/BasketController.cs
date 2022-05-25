@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Dolcecuore.Services.Basket.Api.Controllers
 {
     [ApiController]
-    [Route("api/v1[controller]")]
+    [Route("api/v1/[controller]")]
     public class BasketController : ControllerBase
     {
         private readonly IBasketRepository _basketRepository;
@@ -45,7 +45,7 @@ namespace Dolcecuore.Services.Basket.Api.Controllers
         public async Task<IActionResult> DeleteBasket(string userName)
         {
             await _basketRepository.DeleteBasket(userName);
-            return Ok();
+            return NoContent();
         }
         
     }

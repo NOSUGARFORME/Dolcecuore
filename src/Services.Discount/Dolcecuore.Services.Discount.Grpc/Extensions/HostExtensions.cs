@@ -16,7 +16,7 @@ namespace Dolcecuore.Services.Discount.Grpc.Extensions
             using var scope = host.Services.CreateScope();
             var services = scope.ServiceProvider;
             var configuration = services.GetRequiredService<IConfiguration>();
-            var logger = services.GetRequiredService<ILogger>();
+            var logger = services.GetRequiredService<ILogger<TContext>>();
 
             try
             {
@@ -34,7 +34,7 @@ namespace Dolcecuore.Services.Discount.Grpc.Extensions
                 command.ExecuteNonQuery();
 
                 command.CommandText =
-                    @"CREATE TABLE Coupon(Id SERIAL PRIMARY KEY, ProductName VARCHAR(24) NOT NULL, Desctiption TEXT, Amount INT)";
+                    @"CREATE TABLE Coupon(Id SERIAL PRIMARY KEY, ProductName VARCHAR(24) NOT NULL, Description TEXT, Amount INT)";
 
                 command.ExecuteNonQuery();
             }
