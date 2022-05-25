@@ -1,5 +1,6 @@
 using AutoMapper;
 using Dolcecuore.Services.Order.Application.Features.Orders.Commands.CheckoutOrder;
+using Dolcecuore.Services.Order.Application.Features.Orders.Commands.UpdateOrder;
 using Dolcecuore.Services.Order.Application.Features.Orders.Queries.GetOrderList;
 
 namespace Dolcecuore.Services.Order.Application.Mapping;
@@ -10,5 +11,6 @@ public class MappingProfile : Profile
     {
         CreateMap<Domain.Entities.Order, OrderDto>().ReverseMap();
         CreateMap<Domain.Entities.Order, CheckoutOrderCommand>().ReverseMap();
+        CreateMap<Domain.Entities.Order, UpdateOrderCommand>().ReverseMap();
     }
 }
