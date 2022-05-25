@@ -1,27 +1,34 @@
-using Microsoft.AspNetCore.Hosting;
+using Dolcecuore.Services.Discount.Grpc.Repositories;
+using Dolcecuore.Services.Discount.Grpc.Repositories.Interfaces;
+using Dolcecuore.Services.Discount.Grpc.Services;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Dolcecuore.Services.Discount.Grpc.Extensions;
 
-namespace Dolcecuore.Services.Discount.Grpc
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddGrpc();
+builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
+builder.Services.AddAutoMapper(typeof(Program));
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var host = CreateHostBuilder(args).Build();
-            host.MigrateDatabase<Program>();
-            host.Run();
-        }
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
+    app.UseDeveloperExceptionPage();
 }
+
+app.UseRouting();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapGrpcService<DiscountService>();
+
+    endpoints.MapGet("/", async context =>
+    {
+        await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+    });
+});
+
+app.Run();
