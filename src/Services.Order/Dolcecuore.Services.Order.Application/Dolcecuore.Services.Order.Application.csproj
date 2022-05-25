@@ -10,4 +10,13 @@
       <ProjectReference Include="..\Dolcecuore.Services.Order.Domain\Dolcecuore.Services.Order.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Behaviours" />
+      <Folder Include="Features" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="11.0.1" />
+    </ItemGroup>
+
 </Project>
