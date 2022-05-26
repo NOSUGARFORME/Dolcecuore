@@ -1,5 +1,7 @@
+using Dolcecuore.Services.Order.Api.Extensions;
 using Dolcecuore.Services.Order.Application;
 using Dolcecuore.Services.Order.Infrastructure;
+using Dolcecuore.Services.Order.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,8 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
+
+app.MigrateDatabase<OrderContext>();
 
 if (app.Environment.IsDevelopment())
 {
