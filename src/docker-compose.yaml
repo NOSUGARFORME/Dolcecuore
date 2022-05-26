@@ -1,17 +1,14 @@
 version: '3.4'
 
 services:
-  catalogdb:
-    image: mongo:4.4
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
 
   basketdb:
     image: redis:alpine
     
   discountdb:
     image: postgres
-    
-  orderdb:
-    image: mcr.microsoft.com/mssql/server:2019-latest
 
   dolcecuore.services.basket.api:
     image: ${DOCKER_REGISTRY-}dolcecuoreservicesbasketapi
