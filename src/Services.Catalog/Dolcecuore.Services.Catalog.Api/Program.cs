@@ -17,6 +17,7 @@ builder.Configuration.Bind(appSettings);
 builder.Services.AddApplicationServices();
 
 builder.Services.AddCatalogModule(appSettings);
+builder.Services.AddHostedServicesCatalogModule();
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(c =>
