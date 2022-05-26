@@ -9,6 +9,9 @@ services:
     
   discountdb:
     image: postgres
+    
+  orderdb:
+    image: mcr.microsoft.com/mssql/server:2019-latest
 
   portainer:
     image: portainer/portainer-ce
@@ -36,6 +39,12 @@ services:
     build:
       context: .
       dockerfile: Services.Discount/Dolcecuore.Services.Discount.Grpc/Dockerfile
+      
+  dolcecuore.services.order.api:
+    image: ${DOCKER_REGISTRY-}dolcecuoreservicesorderapi
+    build:
+      context: .
+      dockerfile: Services.Order/Dolcecuore.Services.Order.Api/Dockerfile
 
 volumes:
   mongo_data:
