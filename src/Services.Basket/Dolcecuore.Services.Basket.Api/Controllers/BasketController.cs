@@ -1,7 +1,9 @@
 using System.Net;
 using System.Threading.Tasks;
+using Dolcecuore.Services.Basket.Api.Entities;
 using Dolcecuore.Services.Basket.Api.GrpcServices;
 using Dolcecuore.Services.Basket.Api.Repositories.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dolcecuore.Services.Basket.Api.Controllers
@@ -47,6 +49,21 @@ namespace Dolcecuore.Services.Basket.Api.Controllers
             await _basketRepository.DeleteBasket(userName);
             return NoContent();
         }
-        
+
+        // [HttpPost]
+        // [Route("[action]")]
+        // [ProducesResponseType(StatusCodes.Status202Accepted)]
+        // [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        // public async Task<IActionResult> Checkout([FromBody] BasketCheckout basketCheckout)
+        // {
+        //     var basket = await _basketRepository.GetBasket(basketCheckout.Username);
+        //     if (basket is null)
+        //     {
+        //         return BadRequest();
+        //     }
+        //
+        //     await _basketRepository.DeleteBasket(basket.UserName);
+        //     return Accepted();
+        // }
     }
 }
