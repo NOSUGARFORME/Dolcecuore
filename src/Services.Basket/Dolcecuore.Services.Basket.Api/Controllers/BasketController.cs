@@ -1,6 +1,7 @@
 using System.Net;
 using System.Threading.Tasks;
-using Dolcecuore.Services.Basket.Api.Entities;
+using Dolcecuore.Application.Common;
+using Dolcecuore.Services.Basket.Api.Commands;
 using Dolcecuore.Services.Basket.Api.GrpcServices;
 using Dolcecuore.Services.Basket.Api.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -14,11 +15,16 @@ namespace Dolcecuore.Services.Basket.Api.Controllers
     {
         private readonly IBasketRepository _basketRepository;
         private readonly DiscountGrpcService _discountGrpcService;
+        private readonly Dispatcher _dispatcher;
 
-        public BasketController(IBasketRepository basketRepository, DiscountGrpcService discountGrpcService)
+        public BasketController(
+            IBasketRepository basketRepository,
+            DiscountGrpcService discountGrpcService,
+            Dispatcher dispatcher)
         {
             _basketRepository = basketRepository;
             _discountGrpcService = discountGrpcService;
+            _dispatcher = dispatcher;
         }
         
         [HttpGet("{userName}", Name = "GetBasket")]
@@ -50,20 +56,14 @@ namespace Dolcecuore.Services.Basket.Api.Controllers
             return NoContent();
         }
 
-        // [HttpPost]
-        // [Route("[action]")]
-        // [ProducesResponseType(StatusCodes.Status202Accepted)]
-        // [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        // public async Task<IActionResult> Checkout([FromBody] BasketCheckout basketCheckout)
-        // {
-        //     var basket = await _basketRepository.GetBasket(basketCheckout.Username);
-        //     if (basket is null)
-        //     {
-        //         return BadRequest();
-        //     }
-        //
-        //     await _basketRepository.DeleteBasket(basket.UserName);
-        //     return Accepted();
-        // }
+        [HttpPost]
+        [Route("[action]")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Checkout([FromBody] BasketCheckoutCommand basketCheckout)
+        {
+            await _dispatcher.DispatchAsync(basketCheckout);
+            return Accepted();
+        }
     }
 }

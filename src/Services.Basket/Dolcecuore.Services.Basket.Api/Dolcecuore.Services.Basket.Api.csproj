@@ -21,5 +21,9 @@
       <Link>Protos\discount.proto</Link>
     </Protobuf>
   </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Dolcecuore.Application\Dolcecuore.Application.csproj" />
+  </ItemGroup>
 
 </Project>

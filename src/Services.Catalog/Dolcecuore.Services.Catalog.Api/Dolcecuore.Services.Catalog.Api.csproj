@@ -26,4 +26,8 @@
     <ProjectReference Include="..\..\Common\Dolcecuore.Infrastructure\Dolcecuore.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations" />
+  </ItemGroup>
+
 </Project>

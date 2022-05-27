@@ -18,7 +18,7 @@ public class Dispatcher
         Type[] typeArgs = { command.GetType() };
         var handlerType = type.MakeGenericType(typeArgs);
 
-        dynamic handler = _provider.GetService(handlerType)!;
+        dynamic handler = _provider.GetService(handlerType);
         await handler.HandleAsync((dynamic)command, cancellationToken);
     }
     
