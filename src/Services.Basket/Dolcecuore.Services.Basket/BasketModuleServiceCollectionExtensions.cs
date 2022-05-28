@@ -6,6 +6,7 @@ using Dolcecuore.Infrastructure.Caching;
 using Dolcecuore.Services.Basket.ConfigurationOptions;
 using Dolcecuore.Services.Basket.DTOs;
 using Dolcecuore.Services.Basket.Entities;
+using Dolcecuore.Services.Basket.HostedServices;
 using Dolcecuore.Services.Basket.Repositories;
 using Dolcecuore.Services.Basket.Repositories.Interfaces;
 using Dolcecuore.Services.Basket.Services;
@@ -30,7 +31,6 @@ public static class BasketModuleServiceCollectionExtensions
         services
             .AddScoped<IDiscountGrpcService, DiscountGrpcService>()
             .AddScoped(typeof(IBasketRepository), typeof(BasketRepository))
-            .AddScoped<IBasketRepository, BasketRepository>()
             .AddScoped<IRepository<AuditLogEntry, Guid>, Repository<AuditLogEntry, Guid>>()
             .AddScoped<IRepository<EventLog, long>, Repository<EventLog, long>>();
         
@@ -47,7 +47,16 @@ public static class BasketModuleServiceCollectionExtensions
 
     public static void MigrateBasketEventDb(this IApplicationBuilder app)
     {
-        using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
-        serviceScope.ServiceProvider.GetRequiredService<BasketEventDbContext>().Database.Migrate();
+        using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>()?.CreateScope();
+        serviceScope?.ServiceProvider.GetRequiredService<BasketEventDbContext>().Database.Migrate();
+    }
+
+    public static IServiceCollection AddHostedServicesBasketModule(this IServiceCollection services)
+    {
+        services
+            .AddScoped<PublishEventService>()
+            .AddHostedService<PublishEventWorker>();
+
+        return services;
     }
 }

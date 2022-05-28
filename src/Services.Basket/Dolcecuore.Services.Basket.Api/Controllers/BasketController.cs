@@ -14,16 +14,13 @@ namespace Dolcecuore.Services.Basket.Api.Controllers
     public class BasketController : ControllerBase
     {
         private readonly IBasketRepository _basketRepository;
-        private readonly DiscountGrpcService _discountGrpcService;
         private readonly Dispatcher _dispatcher;
 
         public BasketController(
             IBasketRepository basketRepository,
-            DiscountGrpcService discountGrpcService,
             Dispatcher dispatcher)
         {
             _basketRepository = basketRepository;
-            _discountGrpcService = discountGrpcService;
             _dispatcher = dispatcher;
         }
         
@@ -36,17 +33,11 @@ namespace Dolcecuore.Services.Basket.Api.Controllers
         }
         
         [HttpPost]
-        [ProducesResponseType(typeof(Basket.Entities.Basket), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<Basket.Entities.Basket>> UpdateBasket([FromBody] Basket.Entities.Basket basket)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateBasket([FromBody] Basket.Entities.Basket basket)
         {
-            foreach (var item in basket.Items)
-            {
-                var coupon = await _discountGrpcService.GetDiscount(item.ProductName);
-                item.Price -= coupon.Amount;
-            }
-
+            await _dispatcher.DispatchAsync(new AddUpdateBasketCommand(basket));
             return Ok();
-            // return Ok(await _basketRepository.UpdateBasket(basket));
         }
         
         [HttpDelete("{userName}", Name = "DeleteBasket")]        

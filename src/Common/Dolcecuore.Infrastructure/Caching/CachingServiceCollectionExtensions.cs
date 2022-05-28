@@ -22,7 +22,7 @@ public static class CachingServiceCollectionExtensions
                 });
                 break;
             case "Redis":
-                services.AddDistributedRedisCache(opt =>
+                services.AddStackExchangeRedisCache(opt =>
                 {
                     opt.Configuration = options.Distributed.Redis.Configuration;
                     opt.InstanceName = options.Distributed.Redis.InstanceName;

@@ -17,6 +17,7 @@ builder.Configuration.Bind(appSettings);
 
 builder.Services.AddApplicationServices();
 builder.Services.AddBasketModule(appSettings);
+builder.Services.AddHostedServicesBasketModule();
 
 builder.Services.AddControllers();
 

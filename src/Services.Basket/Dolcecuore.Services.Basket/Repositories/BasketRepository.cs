@@ -24,10 +24,9 @@ namespace Dolcecuore.Services.Basket.Repositories
             return string.IsNullOrWhiteSpace(cart) ? null : JsonConvert.DeserializeObject<Entities.Basket>(cart);
         }
 
-        public async Task UpdateBasket(Entities.Basket basket)
+        public Task UpdateBasket(Entities.Basket basket)
         {
-            await _cache.SetStringAsync(basket.UserName, JsonConvert.SerializeObject(basket));
-            await _domainEvents.DispatchAsync(new EntityUpdatedEvent<Entities.Basket>(basket, DateTime.UtcNow));
+            return _cache.SetStringAsync(basket.UserName, JsonConvert.SerializeObject(basket));
         }
 
         public async Task DeleteBasket(Entities.Basket basket)
