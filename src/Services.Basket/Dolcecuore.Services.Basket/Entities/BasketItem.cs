@@ -1,4 +1,4 @@
-namespace Dolcecuore.Services.Basket.Api.Entities
+namespace Dolcecuore.Services.Basket.Entities
 {
     public class BasketItem
     {

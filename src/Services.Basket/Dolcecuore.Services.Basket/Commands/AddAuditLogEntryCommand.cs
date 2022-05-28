@@ -1,12 +1,9 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Dolcecuore.Application.Common.Commands;
 using Dolcecuore.CrossCuttingConcerns.ExtensionsMethods;
 using Dolcecuore.Domain.Repositories;
-using Dolcecuore.Services.Basket.Api.Entities;
+using Dolcecuore.Services.Basket.Entities;
 
-namespace Dolcecuore.Services.Basket.Api.Commands;
+namespace Dolcecuore.Services.Basket.Commands;
 
 public record AddAuditLogEntryCommand(AuditLogEntry AuditLogEntry) : ICommand;
 

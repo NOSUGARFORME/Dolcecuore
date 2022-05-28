@@ -1,12 +1,10 @@
-using System;
-using System.Threading.Tasks;
 using Dolcecuore.CrossCuttingConcerns.Exceptions;
 using Dolcecuore.Domain.Events;
-using Dolcecuore.Services.Basket.Api.Repositories.Interfaces;
+using Dolcecuore.Services.Basket.Repositories.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 
-namespace Dolcecuore.Services.Basket.Api.Repositories
+namespace Dolcecuore.Services.Basket.Repositories
 {
     public class BasketRepository : IBasketRepository
     {

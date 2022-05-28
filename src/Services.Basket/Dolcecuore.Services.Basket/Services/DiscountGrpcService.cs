@@ -1,15 +1,16 @@
-using System.Threading.Tasks;
+using Dolcecuore.Infrastructure.Grpc;
 using Dolcecuore.Services.Discount.Grpc.Protos;
+using Microsoft.Extensions.Configuration;
 
-namespace Dolcecuore.Services.Basket.Api.GrpcServices
+namespace Dolcecuore.Services.Basket.Services
 {
-    public class DiscountGrpcService
+    public class DiscountGrpcService : IDiscountGrpcService
     {
         private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoService;
 
-        public DiscountGrpcService(DiscountProtoService.DiscountProtoServiceClient discountProtoService)
+        public DiscountGrpcService(IConfiguration configuration)
         {
-            _discountProtoService = discountProtoService;
+            _discountProtoService = new DiscountProtoService.DiscountProtoServiceClient(ChannelFactory.Create(configuration["Services:Grpc:Discount"]));
         }
 
         public async Task<CouponModel> GetDiscount(string productName)

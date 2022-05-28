@@ -1,9 +1,9 @@
 using System.Net;
 using System.Threading.Tasks;
 using Dolcecuore.Application.Common;
-using Dolcecuore.Services.Basket.Api.Commands;
-using Dolcecuore.Services.Basket.Api.GrpcServices;
-using Dolcecuore.Services.Basket.Api.Repositories.Interfaces;
+using Dolcecuore.Services.Basket.Commands;
+using Dolcecuore.Services.Basket.Repositories.Interfaces;
+using Dolcecuore.Services.Basket.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,16 +28,16 @@ namespace Dolcecuore.Services.Basket.Api.Controllers
         }
         
         [HttpGet("{userName}", Name = "GetBasket")]
-        [ProducesResponseType(typeof(Entities.Basket), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<Entities.Basket>> GetBasket(string userName)
+        [ProducesResponseType(typeof(Basket.Entities.Basket), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<Basket.Entities.Basket>> GetBasket(string userName)
         {
             var basket = await _basketRepository.GetBasket(userName);
-            return Ok(basket ?? new Entities.Basket(userName));
+            return Ok(basket ?? new Basket.Entities.Basket(userName));
         }
         
         [HttpPost]
-        [ProducesResponseType(typeof(Entities.Basket), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<Entities.Basket>> UpdateBasket([FromBody] Entities.Basket basket)
+        [ProducesResponseType(typeof(Basket.Entities.Basket), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<Basket.Entities.Basket>> UpdateBasket([FromBody] Basket.Entities.Basket basket)
         {
             foreach (var item in basket.Items)
             {

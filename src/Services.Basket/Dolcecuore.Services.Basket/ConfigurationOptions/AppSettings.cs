@@ -1,7 +1,7 @@
 using Dolcecuore.Infrastructure.Caching;
 using Dolcecuore.Infrastructure.MessageBrokers;
 
-namespace Dolcecuore.Services.Basket.Api.ConfigurationOptions;
+namespace Dolcecuore.Services.Basket.ConfigurationOptions;
 
 public class AppSettings
 {

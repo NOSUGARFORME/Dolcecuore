@@ -1,7 +1,7 @@
 using Dolcecuore.Domain.Entities;
 using Dolcecuore.Infrastructure.Persistence;
 
-namespace Dolcecuore.Services.Basket.Api.Repositories;
+namespace Dolcecuore.Services.Basket.Repositories;
 
 public class Repository<T, TKey> : DbContextRepository<BasketEventDbContext, T, TKey>
     where T : AggregateRoot<TKey>

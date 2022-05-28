@@ -1,16 +1,13 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Dolcecuore.Application.Common;
 using Dolcecuore.CrossCuttingConcerns.ExtensionsMethods;
 using Dolcecuore.Domain.Events;
 using Dolcecuore.Domain.Repositories;
-using Dolcecuore.Services.Basket.Api.Commands;
-using Dolcecuore.Services.Basket.Api.Entities;
+using Dolcecuore.Services.Basket.Commands;
+using Dolcecuore.Services.Basket.Entities;
 
-namespace Dolcecuore.Services.Basket.Api.EventHandlers;
+namespace Dolcecuore.Services.Basket.EventHandlers;
 
-public class BasketDeletedEventHandler : IDomainEventHandler<EntityDeletedEvent<Entities.Basket>>
+public class BasketDeletedEventHandler : IDomainEventHandler<EntityDeletedEvent<Basket.Entities.Basket>>
 {
     private readonly Dispatcher _dispatcher;
     private readonly IRepository<EventLog, long> _eventLogRepository;
@@ -21,7 +18,7 @@ public class BasketDeletedEventHandler : IDomainEventHandler<EntityDeletedEvent<
         _eventLogRepository = eventLogRepository;
     }
 
-    public async Task HandleAsync(EntityDeletedEvent<Entities.Basket> domainEvent, CancellationToken cancellationToken = default)
+    public async Task HandleAsync(EntityDeletedEvent<Basket.Entities.Basket> domainEvent, CancellationToken cancellationToken = default)
     {
         await _dispatcher.DispatchAsync(new AddAuditLogEntryCommand(new AuditLogEntry
             {

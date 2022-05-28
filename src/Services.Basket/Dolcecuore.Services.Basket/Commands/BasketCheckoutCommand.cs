@@ -1,12 +1,10 @@
-using System.Threading;
-using System.Threading.Tasks;
 using Dolcecuore.Application.Common.Commands;
 using Dolcecuore.CrossCuttingConcerns.Exceptions;
 using Dolcecuore.Domain.Repositories;
-using Dolcecuore.Services.Basket.Api.Entities;
-using Dolcecuore.Services.Basket.Api.Repositories.Interfaces;
+using Dolcecuore.Services.Basket.Entities;
+using Dolcecuore.Services.Basket.Repositories.Interfaces;
 
-namespace Dolcecuore.Services.Basket.Api.Commands;
+namespace Dolcecuore.Services.Basket.Commands;
 
 public record BasketCheckoutCommand(string UserName) : ICommand;
 

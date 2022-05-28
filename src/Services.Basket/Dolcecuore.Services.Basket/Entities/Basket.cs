@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
 using Dolcecuore.Domain.Entities;
 
-namespace Dolcecuore.Services.Basket.Api.Entities
+namespace Dolcecuore.Services.Basket.Entities
 {
     public class Basket : AggregateRoot<Guid>
     {

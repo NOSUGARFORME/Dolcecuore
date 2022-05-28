@@ -1,9 +1,8 @@
-using System;
 using Dolcecuore.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Dolcecuore.Services.Basket.Api.Entities;
+namespace Dolcecuore.Services.Basket.Entities;
 
 public class EventLog : AggregateRoot<long>
 {

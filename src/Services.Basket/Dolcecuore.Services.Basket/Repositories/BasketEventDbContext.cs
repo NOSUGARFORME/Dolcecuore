@@ -2,7 +2,7 @@ using System.Reflection;
 using Dolcecuore.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Dolcecuore.Services.Basket.Api.Repositories;
+namespace Dolcecuore.Services.Basket.Repositories;
 
 public class BasketEventDbContext : DbContextUnitOfWork<BasketEventDbContext>
 {

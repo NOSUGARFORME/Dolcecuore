@@ -1,20 +1,19 @@
-using System;
 using System.Reflection;
 using Dolcecuore.Application;
 using Dolcecuore.Domain.Events;
 using Dolcecuore.Domain.Repositories;
 using Dolcecuore.Infrastructure.Caching;
-using Dolcecuore.Services.Basket.Api.ConfigurationOptions;
-using Dolcecuore.Services.Basket.Api.DTOs;
-using Dolcecuore.Services.Basket.Api.Entities;
-using Dolcecuore.Services.Basket.Api.GrpcServices;
-using Dolcecuore.Services.Basket.Api.Repositories;
-using Dolcecuore.Services.Basket.Api.Repositories.Interfaces;
+using Dolcecuore.Services.Basket.ConfigurationOptions;
+using Dolcecuore.Services.Basket.DTOs;
+using Dolcecuore.Services.Basket.Entities;
+using Dolcecuore.Services.Basket.Repositories;
+using Dolcecuore.Services.Basket.Repositories.Interfaces;
+using Dolcecuore.Services.Basket.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Dolcecuore.Services.Basket.Api;
+namespace Dolcecuore.Services.Basket;
 
 public static class BasketModuleServiceCollectionExtensions
 {
@@ -29,7 +28,7 @@ public static class BasketModuleServiceCollectionExtensions
         }));
         
         services
-            .AddScoped<DiscountGrpcService>()
+            .AddScoped<IDiscountGrpcService, DiscountGrpcService>()
             .AddScoped(typeof(IBasketRepository), typeof(BasketRepository))
             .AddScoped<IBasketRepository, BasketRepository>()
             .AddScoped<IRepository<AuditLogEntry, Guid>, Repository<AuditLogEntry, Guid>>()
