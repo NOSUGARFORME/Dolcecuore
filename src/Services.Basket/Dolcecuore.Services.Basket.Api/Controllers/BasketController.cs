@@ -44,15 +44,16 @@ namespace Dolcecuore.Services.Basket.Api.Controllers
                 var coupon = await _discountGrpcService.GetDiscount(item.ProductName);
                 item.Price -= coupon.Amount;
             }
-        
-            return Ok(await _basketRepository.UpdateBasket(basket));
+
+            return Ok();
+            // return Ok(await _basketRepository.UpdateBasket(basket));
         }
         
         [HttpDelete("{userName}", Name = "DeleteBasket")]        
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> DeleteBasket(string userName)
         {
-            await _basketRepository.DeleteBasket(userName);
+            // await _basketRepository.DeleteBasket(userName);
             return NoContent();
         }
 
