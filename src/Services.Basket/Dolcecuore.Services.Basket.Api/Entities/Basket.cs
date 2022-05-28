@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
+using Dolcecuore.Domain.Entities;
 
 namespace Dolcecuore.Services.Basket.Api.Entities
 {
-    public class Basket
+    public class Basket : AggregateRoot<Guid>
     {
         public string UserName { get; set; }
         public List<BasketItem> Items { get; set; } = new();

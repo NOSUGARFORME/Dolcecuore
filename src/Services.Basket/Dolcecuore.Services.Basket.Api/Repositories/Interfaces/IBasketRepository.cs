@@ -6,7 +6,7 @@ namespace Dolcecuore.Services.Basket.Api.Repositories.Interfaces
     public interface IBasketRepository
     {
         Task<Entities.Basket> GetBasket(string userName);
-        Task<Entities.Basket> UpdateBasket(Entities.Basket basket);
-        Task DeleteBasket(string userName);
+        Task UpdateBasket(Entities.Basket basket);
+        Task DeleteBasket(Entities.Basket basket);
     }
 }
