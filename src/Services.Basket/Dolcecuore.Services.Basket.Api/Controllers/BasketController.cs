@@ -1,7 +1,8 @@
-using System.Net;
 using System.Threading.Tasks;
-using Dolcecuore.Services.Basket.Api.GrpcServices;
-using Dolcecuore.Services.Basket.Api.Repositories.Interfaces;
+using Dolcecuore.Application.Common;
+using Dolcecuore.Services.Basket.Commands;
+using Dolcecuore.Services.Basket.Queries;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dolcecuore.Services.Basket.Api.Controllers
@@ -10,43 +11,45 @@ namespace Dolcecuore.Services.Basket.Api.Controllers
     [Route("api/v1/[controller]")]
     public class BasketController : ControllerBase
     {
-        private readonly IBasketRepository _basketRepository;
-        private readonly DiscountGrpcService _discountGrpcService;
+        private readonly Dispatcher _dispatcher;
 
-        public BasketController(IBasketRepository basketRepository, DiscountGrpcService discountGrpcService)
+        public BasketController(Dispatcher dispatcher)
         {
-            _basketRepository = basketRepository;
-            _discountGrpcService = discountGrpcService;
+            _dispatcher = dispatcher;
         }
         
         [HttpGet("{userName}", Name = "GetBasket")]
-        [ProducesResponseType(typeof(Entities.Basket), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<Entities.Basket>> GetBasket(string userName)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<Basket.Entities.Basket>> GetBasket(string userName)
         {
-            var basket = await _basketRepository.GetBasket(userName);
-            return Ok(basket ?? new Entities.Basket(userName));
+            var basket = await _dispatcher.DispatchAsync(new GetBasketQuery(userName, false)); 
+            return Ok(basket);
         }
         
         [HttpPost]
-        [ProducesResponseType(typeof(Entities.Basket), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<Entities.Basket>> UpdateBasket([FromBody] Entities.Basket basket)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateBasket([FromBody] Basket.Entities.Basket basket)
         {
-            foreach (var item in basket.Items)
-            {
-                var coupon = await _discountGrpcService.GetDiscount(item.ProductName);
-                item.Price -= coupon.Amount;
-            }
-        
-            return Ok(await _basketRepository.UpdateBasket(basket));
+            await _dispatcher.DispatchAsync(new AddUpdateBasketCommand(basket));
+            return Ok();
         }
         
         [HttpDelete("{userName}", Name = "DeleteBasket")]        
-        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteBasket(string userName)
         {
-            await _basketRepository.DeleteBasket(userName);
+            await _dispatcher.DispatchAsync(new DeleteBasketCommand(userName));
             return NoContent();
         }
-        
+
+        [HttpPost]
+        [Route("[action]")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Checkout([FromBody] BasketCheckoutCommand basketCheckout)
+        {
+            await _dispatcher.DispatchAsync(basketCheckout);
+            return Accepted();
+        }
     }
 }

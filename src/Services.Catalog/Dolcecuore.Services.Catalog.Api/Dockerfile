@@ -6,6 +6,10 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["Services.Catalog/Dolcecuore.Services.Catalog.Api/Dolcecuore.Services.Catalog.Api.csproj", "Services.Catalog/Dolcecuore.Services.Catalog.Api/"]
+COPY ["Common/Dolcecuore.Application/Dolcecuore.Application.csproj", "Common/Dolcecuore.Application/"]
+COPY ["Common/Dolcecuore.Domain/Dolcecuore.Domain.csproj", "Common/Dolcecuore.Domain/"]
+COPY ["Common/Dolcecuore.CrossCuttingConcerns/Dolcecuore.CrossCuttingConcerns.csproj", "Common/Dolcecuore.CrossCuttingConcerns/"]
+COPY ["Common/Dolcecuore.Infrastructure/Dolcecuore.Infrastructure.csproj", "Common/Dolcecuore.Infrastructure/"]
 RUN dotnet restore "Services.Catalog/Dolcecuore.Services.Catalog.Api/Dolcecuore.Services.Catalog.Api.csproj"
 COPY . .
 WORKDIR "/src/Services.Catalog/Dolcecuore.Services.Catalog.Api"

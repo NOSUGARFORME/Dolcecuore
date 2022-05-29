@@ -7,8 +7,8 @@ public static class HostExtensions
 {
     public static IHost MigrateDatabase<TContext>(
         this IHost host,
-        int retry = 0)
-    where TContext : DbContext
+        int retry = 0) 
+        where TContext : DbContext
     {
         using var scope = host.Services.CreateScope();
         

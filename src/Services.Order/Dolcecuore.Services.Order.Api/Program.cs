@@ -1,3 +1,4 @@
+using Dolcecuore.Application;
 using Dolcecuore.Services.Order.Api.Extensions;
 using Dolcecuore.Services.Order.Application;
 using Dolcecuore.Services.Order.Infrastructure;
@@ -9,6 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddApplicationServices();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 

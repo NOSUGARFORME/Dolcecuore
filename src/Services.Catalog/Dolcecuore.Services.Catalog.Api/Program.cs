@@ -1,16 +1,23 @@
-using Dolcecuore.Services.Catalog.Api.Data;
-using Dolcecuore.Services.Catalog.Api.Data.Interfaces;
-using Dolcecuore.Services.Catalog.Api.Repositories;
-using Dolcecuore.Services.Catalog.Api.Repositories.Interfaces;
+using System;
+using Dolcecuore.Application;
+using Dolcecuore.Services.Catalog.Api;
+using Dolcecuore.Services.Catalog.Api.ConfigurationOptions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Polly;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<ICatalogContext, CatalogContext>();
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
+var appSettings = new AppSettings();
+builder.Configuration.Bind(appSettings);
+
+builder.Services.AddApplicationServices();
+
+builder.Services.AddCatalogModule(appSettings);
+builder.Services.AddHostedServicesCatalogModule();
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(c =>
@@ -19,6 +26,17 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+Policy.Handle<Exception>().WaitAndRetry(new[]
+    {
+        TimeSpan.FromSeconds(10),
+        TimeSpan.FromSeconds(20),
+        TimeSpan.FromSeconds(30),
+    })
+    .Execute(() =>
+    {
+        app.MigrateProductDb();
+    });
 
 if (app.Environment.IsDevelopment())
 {

@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Common\Dolcecuore.Application\Dolcecuore.Application.csproj" />
       <ProjectReference Include="..\Dolcecuore.Services.Order.Application\Dolcecuore.Services.Order.Application.csproj" />
       <ProjectReference Include="..\Dolcecuore.Services.Order.Infrastructure\Dolcecuore.Services.Order.Infrastructure.csproj" />
     </ItemGroup>

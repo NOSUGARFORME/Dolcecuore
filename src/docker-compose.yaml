@@ -1,20 +1,14 @@
 version: '3.4'
 
 services:
-  catalogdb:
-    image: mongo:4.4
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
 
   basketdb:
     image: redis:alpine
     
   discountdb:
     image: postgres
-    
-  orderdb:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-
-  portainer:
-    image: portainer/portainer-ce
 
   dolcecuore.services.basket.api:
     image: ${DOCKER_REGISTRY-}dolcecuoreservicesbasketapi
@@ -45,6 +39,12 @@ services:
     build:
       context: .
       dockerfile: Services.Order/Dolcecuore.Services.Order.Api/Dockerfile
+  
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+  
+  portainer :
+    image : portainer/portainer-ce
 
 volumes:
   mongo_data:

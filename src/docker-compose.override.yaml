@@ -1,13 +1,15 @@
 version: '3.4'
 
 services:
-  catalogdb:
-    container_name: catalogdb
+  mssql:
+    container_name: mssql
     restart: always
     ports:
-        - "27017:27017"
-    volumes:
-        - mongo_data:/data/db
+        - "1433:1433"
+    environment :
+      SA_PASSWORD : "sqladmin123!@#"
+      MSSQL_PID : "Developer"
+      ACCEPT_EULA : "Y"
 
   basketdb: 
     container_name: basketdb
@@ -26,33 +28,16 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-  
-  orderdb:
-    container_name: orderdb
-    environment:
-      - SA_PASSWORD=password
-      - ACCEPT_EULA=Y
-    restart: always
-    ports:
-      - "1433:1433"
-  
-  portainer: 
-    container_name: portainer
-    restart: always
-    ports:
-        - "8080:8000"
-        - "9000:9000"
-    volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
-        - portainer_data:/data
 
   dolcecuore.services.catalog.api:
     container_name: catalog.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - Mongo__ConnectionString=mongodb://catalogdb:27017
+      - ConnectionStrings__Dolcecuore=Server=mssql;Database=Dolcecuore.Microservices.Catalog;User Id=sa;Password=sqladmin123!@#;MultipleActiveResultSets=true
+      - MessageBroker__Provider=RabbitMQ
+      - MessageBroker__RabbitMQ__HostName=rabbitmq
     depends_on:
-      - catalogdb
+      - mssql
     ports:
       - "8001:80"
 
@@ -91,8 +76,25 @@ services:
     container_name: order.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__OrderingConnectionString=Server=orderdb;Database=OrderDb;User Id=sa;Password=password
+      - ConnectionStrings__OrderingConnectionString=Server=mssql;Database=Dolcecuore.Microservices.Order;User Id=sa;Password=sqladmin123!@#;MultipleActiveResultSets=true
     depends_on:
-      - orderdb
+      - mssql
     ports:
       - "8005:80"
+
+  rabbitmq:
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+        
+  portainer :
+    container_name : portainer
+    restart : always
+    ports :
+      - "8080:8000"
+      - "9000:9000"
+    volumes :
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
