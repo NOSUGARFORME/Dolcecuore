@@ -25,12 +25,12 @@ public class OrderController : ControllerBase
 
     [HttpGet("{username}", Name = "GetOrders")]
     [ProducesResponseType(typeof(IEnumerable<OrderDto>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrdersByUsername(string username)
+    public async Task<ActionResult<IEnumerable<OrderModel>>> GetOrdersByUsername(string userName)
     {
-        var query = new GetOrdersListQuery(username);
-        var orders = await _mediator.Send(query);
+        var orders = await _dispatcher.DispatchAsync(new GetOrdersByUserName(userName));
+        var models = orders.Select(o => _mapper.Map<OrderModel>(o));
         
-        return Ok(orders);
+        return Ok(models);
     }
 
     [HttpGet("{id:guid}", Name = "GetOrder")]
