@@ -3,16 +3,20 @@
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
       <Folder Include="Commands" />
       <Folder Include="DTOs" />
-      <Folder Include="Entities" />
       <Folder Include="EventHandlers" />
       <Folder Include="Queries" />
-      <Folder Include="Repositories" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Common\Dolcecuore.Application\Dolcecuore.Application.csproj" />
+      <ProjectReference Include="..\..\Common\Dolcecuore.CrossCuttingConcerns\Dolcecuore.CrossCuttingConcerns.csproj" />
+      <ProjectReference Include="..\..\Common\Dolcecuore.Domain\Dolcecuore.Domain.csproj" />
+      <ProjectReference Include="..\..\Common\Dolcecuore.Infrastructure\Dolcecuore.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>
