@@ -1,9 +1,11 @@
 using System.Net;
+using AutoMapper;
 using Dolcecuore.Application.Common;
-using Dolcecuore.Services.Order.Application.Features.Orders.Commands.DeleteOrder;
+using Dolcecuore.Services.Order.Api.Models;
 using Dolcecuore.Services.Order.Application.Features.Orders.Commands.UpdateOrder;
 using Dolcecuore.Services.Order.Application.Features.Orders.Queries.GetOrderList;
 using Dolcecuore.Services.Order.Commands;
+using Dolcecuore.Services.Order.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dolcecuore.Services.Order.Api.Controllers;
@@ -13,10 +15,12 @@ namespace Dolcecuore.Services.Order.Api.Controllers;
 public class OrderController : ControllerBase
 {
     private readonly Dispatcher _dispatcher;
+    private readonly IMapper _mapper;
 
-    public OrderController(Dispatcher dispatcher)
+    public OrderController(Dispatcher dispatcher, IMapper mapper)
     {
         _dispatcher = dispatcher;
+        _mapper = mapper;
     }
 
     [HttpGet("{username}", Name = "GetOrders")]
@@ -29,6 +33,14 @@ public class OrderController : ControllerBase
         return Ok(orders);
     }
 
+    [HttpGet("{id:guid}", Name = "GetOrder")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<OrderModel>> GetOrder(Guid id)
+    {
+        var order = await _dispatcher.DispatchAsync(new GetOrderQuery(id, true));
+        return Ok(_mapper.Map<OrderModel>(order));
+    }
+    
     [HttpPost(Name = "CheckoutOrder")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> CheckoutOrder([FromBody] CheckoutOrderCommand command)
@@ -53,8 +65,7 @@ public class OrderController : ControllerBase
     [ProducesDefaultResponseType]
     public async Task<ActionResult> DeleteOrder(Guid id)
     {
-        // TODO: get order
-        // var order = 
+        var order = await _dispatcher.DispatchAsync(new GetOrderQuery(id, true));
         await _dispatcher.DispatchAsync(new DeleteOrderCommand(order));
         return NoContent();
     }

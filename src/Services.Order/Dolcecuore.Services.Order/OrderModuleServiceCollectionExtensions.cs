@@ -1,3 +1,6 @@
+using System.Reflection;
+using Dolcecuore.Application;
+using Dolcecuore.Domain.Events;
 using Dolcecuore.Domain.Repositories;
 using Dolcecuore.Services.Order.ConfigureOptions;
 using Dolcecuore.Services.Order.Entities;
@@ -25,6 +28,12 @@ public static class OrderModuleServiceCollectionExtensions
             .AddScoped(typeof(IOrderRepository), typeof(OrderRepository))
             .AddScoped<IRepository<AuditLogEntry, Guid>, Repository<AuditLogEntry, Guid>>()
             .AddScoped<IRepository<EventLog, long>, Repository<EventLog, long>>();
+
+        DomainEvents.RegisterHandlers(Assembly.GetExecutingAssembly(), services);
+
+        services.AddMessageHandlers(Assembly.GetExecutingAssembly());
+
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
         return services;
     }
