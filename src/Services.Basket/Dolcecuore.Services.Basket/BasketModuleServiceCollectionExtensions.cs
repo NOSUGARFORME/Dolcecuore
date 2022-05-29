@@ -40,7 +40,9 @@ public static class BasketModuleServiceCollectionExtensions
         
         services.AddMessageHandlers(Assembly.GetExecutingAssembly());
         
-        services.AddMessageBusSender<AuditLogCreatedEvent>(appSettings.MessageBroker);
+        services
+            .AddMessageBusSender<BasketCheckedEvent>(appSettings.MessageBroker)
+            .AddMessageBusSender<AuditLogCreatedEvent>(appSettings.MessageBroker);
 
         return services;
     }

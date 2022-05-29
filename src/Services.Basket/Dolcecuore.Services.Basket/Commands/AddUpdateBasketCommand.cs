@@ -11,11 +11,16 @@ public class AddUpdateBasketCommandHandler : ICommandHandler<AddUpdateBasketComm
 {
     private readonly IDomainEvents _domainEvents;
     private readonly IDiscountGrpcService _discountGrpcService;
+    private readonly IBasketRepository _basketRepository;
 
-    public AddUpdateBasketCommandHandler(IDomainEvents domainEvents, IDiscountGrpcService discountGrpcService)
+    public AddUpdateBasketCommandHandler(
+        IDomainEvents domainEvents,
+         IDiscountGrpcService discountGrpcService,
+        IBasketRepository basketRepository)
     {
         _domainEvents = domainEvents;
         _discountGrpcService = discountGrpcService;
+        _basketRepository = basketRepository;
     }
 
     public async Task HandleAsync(AddUpdateBasketCommand command, CancellationToken cancellationToken = default)
@@ -26,6 +31,8 @@ public class AddUpdateBasketCommandHandler : ICommandHandler<AddUpdateBasketComm
             item.Price -= coupon.Amount;
         }
         
+        // TODO: handle one transaction
+        await _basketRepository.UpdateBasket(command.Basket);
         await _domainEvents.DispatchAsync(new EntityUpdatedEvent<Entities.Basket>(command.Basket, DateTime.UtcNow), cancellationToken);
     }
 }

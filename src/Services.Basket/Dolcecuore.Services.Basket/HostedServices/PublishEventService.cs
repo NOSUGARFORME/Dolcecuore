@@ -5,7 +5,6 @@ using Dolcecuore.Services.Basket.DTOs;
 using Dolcecuore.Services.Basket.Entities;
 using Dolcecuore.Services.Basket.Repositories.Interfaces;
 using Microsoft.Extensions.Logging;
-using StackExchange.Redis;
 
 namespace Dolcecuore.Services.Basket.HostedServices;
 
@@ -14,18 +13,20 @@ public class PublishEventService
     private readonly ILogger<PublishEventService> _logger;
     private readonly IRepository<EventLog, long> _eventLogRepository;
     private readonly IMessageSender<AuditLogCreatedEvent> _auditLogCreatedEventSender;
+    private readonly IMessageSender<BasketCheckedEvent> _basketCheckedEventSender;
     private readonly IBasketRepository _basketRepository;
 
     public PublishEventService(
         ILogger<PublishEventService> logger,
         IRepository<EventLog, long> eventLogRepository,
         IMessageSender<AuditLogCreatedEvent> auditLogCreatedEventSender,
-        IBasketRepository basketRepository)
+        IBasketRepository basketRepository, IMessageSender<BasketCheckedEvent> basketCheckedEventSender)
     {
         _logger = logger;
         _eventLogRepository = eventLogRepository;
         _auditLogCreatedEventSender = auditLogCreatedEventSender;
         _basketRepository = basketRepository;
+        _basketCheckedEventSender = basketCheckedEventSender;
     }
     
     public async Task<int> PublishEvents()
@@ -46,15 +47,17 @@ public class PublishEventService
             else if (eventLog.EventType == "BASKET_UPDATED")
             {
                 var basket = JsonSerializer.Deserialize<Entities.Basket>(eventLog.Message);
-                try
-                {
-                    await _basketRepository.UpdateBasket(basket);
-                }
-                catch (RedisException e)
-                {
-                    _logger.LogError($"Redis exception: {e.Message}");
-                    continue;
-                }
+                
+            }
+            else if (eventLog.EventType == "BASKET_DELETED")
+            {
+                var basket = JsonSerializer.Deserialize<Entities.Basket>(eventLog.Message);
+                
+            }
+            else if (eventLog.EventType == "BASKET_CHECKED")
+            {
+                var order = JsonSerializer.Deserialize<Order>(eventLog.Message);
+                await _basketCheckedEventSender.SendAsync(new BasketCheckedEvent(order));
             }
 
             eventLog.Published = true;
