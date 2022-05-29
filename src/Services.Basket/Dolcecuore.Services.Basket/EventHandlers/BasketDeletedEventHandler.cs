@@ -21,13 +21,13 @@ public class BasketDeletedEventHandler : IDomainEventHandler<EntityDeletedEvent<
     public async Task HandleAsync(EntityDeletedEvent<Basket.Entities.Basket> domainEvent, CancellationToken cancellationToken = default)
     {
         await _dispatcher.DispatchAsync(new AddAuditLogEntryCommand(new AuditLogEntry
-            {
-                // UserId =
-                CreatedDateTime = domainEvent.EventDateTime,
-                Action = "DELETE_BASKET",
-                ObjectId = domainEvent.Entity.Id.ToString(),
-                Log = domainEvent.Entity.AsJsonString(),
-            }), cancellationToken);
+        {
+            // UserId =
+            CreatedDateTime = domainEvent.EventDateTime,
+            Action = "DELETE_BASKET",
+            ObjectId = domainEvent.Entity.Id.ToString(),
+            Log = domainEvent.Entity.AsJsonString(),
+        }), cancellationToken);
 
         await _eventLogRepository.AddOrUpdateAsync(new EventLog
         {

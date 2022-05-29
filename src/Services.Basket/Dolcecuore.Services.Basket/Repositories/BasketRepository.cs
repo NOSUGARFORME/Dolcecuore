@@ -29,10 +29,9 @@ namespace Dolcecuore.Services.Basket.Repositories
             return _cache.SetStringAsync(basket.UserName, JsonConvert.SerializeObject(basket));
         }
 
-        public async Task DeleteBasket(Entities.Basket basket)
+        public Task DeleteBasket(Entities.Basket basket)
         {
-            await _cache.RemoveAsync(basket.UserName);
-            await _domainEvents.DispatchAsync(new EntityDeletedEvent<Entities.Basket>(basket, DateTime.UtcNow));
+            return _cache.RemoveAsync(basket.UserName);
         }
     }
 }
