@@ -2,6 +2,7 @@ using Dolcecuore.Application.Common;
 using Dolcecuore.CrossCuttingConcerns.ExtensionsMethods;
 using Dolcecuore.Domain.Events;
 using Dolcecuore.Domain.Repositories;
+using Dolcecuore.Services.Order.Commands;
 using Dolcecuore.Services.Order.Entities;
 
 namespace Dolcecuore.Services.Order.EventHandlers;
