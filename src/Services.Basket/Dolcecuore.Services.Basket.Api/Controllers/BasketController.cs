@@ -1,9 +1,7 @@
-using System.Net;
 using System.Threading.Tasks;
 using Dolcecuore.Application.Common;
 using Dolcecuore.Services.Basket.Commands;
-using Dolcecuore.Services.Basket.Repositories.Interfaces;
-using Dolcecuore.Services.Basket.Services;
+using Dolcecuore.Services.Basket.Queries;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,10 +19,11 @@ namespace Dolcecuore.Services.Basket.Api.Controllers
         }
         
         [HttpGet("{userName}", Name = "GetBasket")]
-        [ProducesResponseType(typeof(Basket.Entities.Basket), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Basket.Entities.Basket>> GetBasket(string userName)
         {
-            return null;
+            var basket = await _dispatcher.DispatchAsync(new GetBasketQuery(userName, false)); 
+            return Ok(basket);
         }
         
         [HttpPost]
