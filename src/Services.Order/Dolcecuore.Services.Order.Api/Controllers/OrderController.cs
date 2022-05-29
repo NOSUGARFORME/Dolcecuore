@@ -47,15 +47,15 @@ public class OrderController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id:int}", Name = "DeleteOrder")]
+    [HttpDelete("{id:guid}", Name = "DeleteOrder")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> DeleteOrder(int id)
+    public async Task<ActionResult> DeleteOrder(Guid id)
     {
-        var command = new DeleteOrderCommand(id);
-        await _mediator.Send(command);
-        
+        // TODO: get order
+        // var order = 
+        await _dispatcher.DispatchAsync(new DeleteOrderCommand(order));
         return NoContent();
     }
 }
