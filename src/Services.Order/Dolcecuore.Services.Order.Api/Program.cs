@@ -1,22 +1,23 @@
 using Dolcecuore.Application;
-using Dolcecuore.Services.Order.Api.Extensions;
-using Dolcecuore.Services.Order.Application;
-using Dolcecuore.Services.Order.Infrastructure;
-using Dolcecuore.Services.Order.Infrastructure.Persistence;
+using Dolcecuore.Services.Order;
+using Dolcecuore.Services.Order.ConfigureOptions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var appSettings = new AppSettings();
+builder.Configuration.Bind(appSettings);
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplicationServices();
-builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddOrderModule(appSettings);
 
 var app = builder.Build();
 
-app.MigrateDatabase<OrderContext>();
+app.MigrateOrderDb();
 
 if (app.Environment.IsDevelopment())
 {
