@@ -1,9 +1,6 @@
-using System.Net;
 using AutoMapper;
 using Dolcecuore.Application.Common;
 using Dolcecuore.Services.Order.Api.Models;
-using Dolcecuore.Services.Order.Application.Features.Orders.Commands.UpdateOrder;
-using Dolcecuore.Services.Order.Application.Features.Orders.Queries.GetOrderList;
 using Dolcecuore.Services.Order.Commands;
 using Dolcecuore.Services.Order.Queries;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +21,7 @@ public class OrderController : ControllerBase
     }
 
     [HttpGet("{username}", Name = "GetOrders")]
-    [ProducesResponseType(typeof(IEnumerable<OrderDto>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<OrderModel>>> GetOrdersByUsername(string userName)
     {
         var orders = await _dispatcher.DispatchAsync(new GetOrdersByUserName(userName));
@@ -43,19 +40,23 @@ public class OrderController : ControllerBase
     
     [HttpPost(Name = "CheckoutOrder")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> CheckoutOrder([FromBody] CheckoutOrderCommand command)
+    public async Task<IActionResult> CheckoutOrder([FromBody] OrderModel model)
     {
-        await _dispatcher.DispatchAsync(command);
+        var order = _mapper.Map<Entities.Order>(model);
+        await _dispatcher.DispatchAsync(new AddUpdateOrderCommand(order));
         return Ok();
     }
 
-    [HttpPut(Name = "UpdateOrder")]
+    [HttpPut("{id:guid}",Name = "UpdateOrder")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> UpdateOrder([FromBody] UpdateOrderCommand command)
+    public async Task<ActionResult> UpdateOrder(Guid id, [FromBody] OrderModel model)
     {
-        await _mediator.Send(command);
+        var order = await _dispatcher.DispatchAsync(new GetOrderQuery(id, true));
+        order = _mapper.Map<Entities.Order>(order);
+        
+        await _dispatcher.DispatchAsync(new AddUpdateOrderCommand(order));
         return NoContent();
     }
 

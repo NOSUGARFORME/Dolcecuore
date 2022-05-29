@@ -1,1 +1,0 @@
-dotnet ef migrations add init --context OrderContext --startup-project ../Dolcecuore.Services.Order.Api/ -o Migrations   
