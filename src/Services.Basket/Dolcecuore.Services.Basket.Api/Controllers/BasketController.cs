@@ -13,14 +13,10 @@ namespace Dolcecuore.Services.Basket.Api.Controllers
     [Route("api/v1/[controller]")]
     public class BasketController : ControllerBase
     {
-        private readonly IBasketRepository _basketRepository;
         private readonly Dispatcher _dispatcher;
 
-        public BasketController(
-            IBasketRepository basketRepository,
-            Dispatcher dispatcher)
+        public BasketController(Dispatcher dispatcher)
         {
-            _basketRepository = basketRepository;
             _dispatcher = dispatcher;
         }
         
@@ -28,8 +24,7 @@ namespace Dolcecuore.Services.Basket.Api.Controllers
         [ProducesResponseType(typeof(Basket.Entities.Basket), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<Basket.Entities.Basket>> GetBasket(string userName)
         {
-            var basket = await _basketRepository.GetBasket(userName);
-            return Ok(basket ?? new Basket.Entities.Basket(userName));
+            return null;
         }
         
         [HttpPost]
@@ -41,10 +36,10 @@ namespace Dolcecuore.Services.Basket.Api.Controllers
         }
         
         [HttpDelete("{userName}", Name = "DeleteBasket")]        
-        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteBasket(string userName)
         {
-            // await _basketRepository.DeleteBasket(userName);
+            await _dispatcher.DispatchAsync(new DeleteBasketCommand(userName));
             return NoContent();
         }
 
