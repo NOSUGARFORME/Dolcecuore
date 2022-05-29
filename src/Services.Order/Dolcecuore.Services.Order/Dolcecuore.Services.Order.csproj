@@ -6,9 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Commands" />
       <Folder Include="DTOs" />
-      <Folder Include="EventHandlers" />
       <Folder Include="Queries" />
     </ItemGroup>
 

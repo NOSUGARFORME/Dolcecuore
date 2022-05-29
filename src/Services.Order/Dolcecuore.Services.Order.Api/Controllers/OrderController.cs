@@ -1,9 +1,9 @@
 using System.Net;
-using Dolcecuore.Services.Order.Application.Features.Orders.Commands.CheckoutOrder;
+using Dolcecuore.Application.Common;
 using Dolcecuore.Services.Order.Application.Features.Orders.Commands.DeleteOrder;
 using Dolcecuore.Services.Order.Application.Features.Orders.Commands.UpdateOrder;
 using Dolcecuore.Services.Order.Application.Features.Orders.Queries.GetOrderList;
-using MediatR;
+using Dolcecuore.Services.Order.Commands;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dolcecuore.Services.Order.Api.Controllers;
@@ -12,11 +12,11 @@ namespace Dolcecuore.Services.Order.Api.Controllers;
 [Route("api/v1/[controller]")]
 public class OrderController : ControllerBase
 {
-    private readonly IMediator _mediator;
+    private readonly Dispatcher _dispatcher;
 
-    public OrderController(IMediator mediator)
+    public OrderController(Dispatcher dispatcher)
     {
-        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        _dispatcher = dispatcher;
     }
 
     [HttpGet("{username}", Name = "GetOrders")]
@@ -30,11 +30,11 @@ public class OrderController : ControllerBase
     }
 
     [HttpPost(Name = "CheckoutOrder")]
-    [ProducesResponseType((int) HttpStatusCode.OK)]
-    public async Task<ActionResult<int>> CheckoutOrder([FromBody] CheckoutOrderCommand command)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> CheckoutOrder([FromBody] CheckoutOrderCommand command)
     {
-        var result = await _mediator.Send(command);
-        return Ok(result);
+        await _dispatcher.DispatchAsync(command);
+        return Ok();
     }
 
     [HttpPut(Name = "UpdateOrder")]
