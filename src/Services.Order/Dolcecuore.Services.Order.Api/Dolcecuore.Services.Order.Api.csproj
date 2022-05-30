@@ -2,7 +2,6 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
@@ -17,8 +16,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Common\Dolcecuore.Application\Dolcecuore.Application.csproj" />
+      <ProjectReference Include="..\..\Common\Dolcecuore.Infrastructure\Dolcecuore.Infrastructure.csproj" />
       <ProjectReference Include="..\Dolcecuore.Services.Order.Application\Dolcecuore.Services.Order.Application.csproj" />
       <ProjectReference Include="..\Dolcecuore.Services.Order.Infrastructure\Dolcecuore.Services.Order.Infrastructure.csproj" />
+      <ProjectReference Include="..\Dolcecuore.Services.Order\Dolcecuore.Services.Order.csproj" />
     </ItemGroup>
 
 </Project>

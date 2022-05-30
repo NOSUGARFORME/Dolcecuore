@@ -1,9 +1,8 @@
-using System.Net;
-using Dolcecuore.Services.Order.Application.Features.Orders.Commands.CheckoutOrder;
-using Dolcecuore.Services.Order.Application.Features.Orders.Commands.DeleteOrder;
-using Dolcecuore.Services.Order.Application.Features.Orders.Commands.UpdateOrder;
-using Dolcecuore.Services.Order.Application.Features.Orders.Queries.GetOrderList;
-using MediatR;
+using AutoMapper;
+using Dolcecuore.Application.Common;
+using Dolcecuore.Services.Order.Api.Models;
+using Dolcecuore.Services.Order.Commands;
+using Dolcecuore.Services.Order.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dolcecuore.Services.Order.Api.Controllers;
@@ -12,50 +11,63 @@ namespace Dolcecuore.Services.Order.Api.Controllers;
 [Route("api/v1/[controller]")]
 public class OrderController : ControllerBase
 {
-    private readonly IMediator _mediator;
+    private readonly Dispatcher _dispatcher;
+    private readonly IMapper _mapper;
 
-    public OrderController(IMediator mediator)
+    public OrderController(Dispatcher dispatcher, IMapper mapper)
     {
-        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        _dispatcher = dispatcher;
+        _mapper = mapper;
     }
 
     [HttpGet("{username}", Name = "GetOrders")]
-    [ProducesResponseType(typeof(IEnumerable<OrderDto>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrdersByUsername(string username)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<OrderModel>>> GetOrdersByUsername(string userName)
     {
-        var query = new GetOrdersListQuery(username);
-        var orders = await _mediator.Send(query);
+        var orders = await _dispatcher.DispatchAsync(new GetOrdersByUserName(userName));
+        var models = orders.Select(o => _mapper.Map<OrderModel>(o));
         
-        return Ok(orders);
+        return Ok(models);
     }
 
-    [HttpPost(Name = "CheckoutOrder")]
-    [ProducesResponseType((int) HttpStatusCode.OK)]
-    public async Task<ActionResult<int>> CheckoutOrder([FromBody] CheckoutOrderCommand command)
+    [HttpGet("{id:guid}", Name = "GetOrder")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<OrderModel>> GetOrder(Guid id)
     {
-        var result = await _mediator.Send(command);
-        return Ok(result);
+        var order = await _dispatcher.DispatchAsync(new GetOrderQuery(id, true));
+        return Ok(_mapper.Map<OrderModel>(order));
+    }
+    
+    [HttpPost(Name = "CheckoutOrder")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> CheckoutOrder([FromBody] OrderModel model)
+    {
+        var order = _mapper.Map<Entities.Order>(model);
+        await _dispatcher.DispatchAsync(new AddUpdateOrderCommand(order));
+        return Ok();
     }
 
-    [HttpPut(Name = "UpdateOrder")]
+    [HttpPut("{id:guid}",Name = "UpdateOrder")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> UpdateOrder([FromBody] UpdateOrderCommand command)
+    public async Task<ActionResult> UpdateOrder(Guid id, [FromBody] OrderModel model)
     {
-        await _mediator.Send(command);
+        var order = await _dispatcher.DispatchAsync(new GetOrderQuery(id, true));
+        order = _mapper.Map<Entities.Order>(order);
+        
+        await _dispatcher.DispatchAsync(new AddUpdateOrderCommand(order));
         return NoContent();
     }
 
-    [HttpDelete("{id:int}", Name = "DeleteOrder")]
+    [HttpDelete("{id:guid}", Name = "DeleteOrder")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> DeleteOrder(int id)
+    public async Task<ActionResult> DeleteOrder(Guid id)
     {
-        var command = new DeleteOrderCommand(id);
-        await _mediator.Send(command);
-        
+        var order = await _dispatcher.DispatchAsync(new GetOrderQuery(id, true));
+        await _dispatcher.DispatchAsync(new DeleteOrderCommand(order));
         return NoContent();
     }
 }
