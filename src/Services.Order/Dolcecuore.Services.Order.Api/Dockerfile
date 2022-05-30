@@ -6,9 +6,11 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["Services.Order/Dolcecuore.Services.Order.Api/Dolcecuore.Services.Order.Api.csproj", "Services.Order/Dolcecuore.Services.Order.Api/"]
-COPY ["Services.Order/Dolcecuore.Services.Order.Application/Dolcecuore.Services.Order.Application.csproj", "Services.Order/Dolcecuore.Services.Order.Application/"]
-COPY ["Services.Order/Dolcecuore.Services.Order.Domain/Dolcecuore.Services.Order.Domain.csproj", "Services.Order/Dolcecuore.Services.Order.Domain/"]
-COPY ["Services.Order/Dolcecuore.Services.Order.Infrastructure/Dolcecuore.Services.Order.Infrastructure.csproj", "Services.Order/Dolcecuore.Services.Order.Infrastructure/"]
+COPY ["Common/Dolcecuore.Application/Dolcecuore.Application.csproj", "Common/Dolcecuore.Application/"]
+COPY ["Common/Dolcecuore.CrossCuttingConcerns/Dolcecuore.CrossCuttingConcerns.csproj", "Common/Dolcecuore.CrossCuttingConcerns/"]
+COPY ["Common/Dolcecuore.Domain/Dolcecuore.Domain.csproj", "Common/Dolcecuore.Domain/"]
+COPY ["Common/Dolcecuore.Infrastructure/Dolcecuore.Infrastructure.csproj", "Common/Dolcecuore.Infrastructure/"]
+COPY ["Services.Order/Dolcecuore.Services.Order/Dolcecuore.Services.Order.csproj", "Services.Order/Dolcecuore.Services.Order/"]
 RUN dotnet restore "Services.Order/Dolcecuore.Services.Order.Api/Dolcecuore.Services.Order.Api.csproj"
 COPY . .
 WORKDIR "/src/Services.Order/Dolcecuore.Services.Order.Api"
