@@ -3,7 +3,9 @@ using Dolcecuore.Application;
 using Dolcecuore.Domain.Events;
 using Dolcecuore.Domain.Repositories;
 using Dolcecuore.Services.Order.ConfigureOptions;
+using Dolcecuore.Services.Order.DTOs;
 using Dolcecuore.Services.Order.Entities;
+using Dolcecuore.Services.Order.HostedServices;
 using Dolcecuore.Services.Order.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +34,8 @@ public static class OrderModuleServiceCollectionExtensions
         DomainEvents.RegisterHandlers(Assembly.GetExecutingAssembly(), services);
 
         services.AddMessageHandlers(Assembly.GetExecutingAssembly());
+        
+        services.AddMessageBusSender<AuditLogCreatedEvent>(appSettings.MessageBroker);
 
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
@@ -43,4 +47,9 @@ public static class OrderModuleServiceCollectionExtensions
         using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>()?.CreateScope();
         serviceScope?.ServiceProvider.GetRequiredService<OrderDbContext>().Database.Migrate();
     }
+
+    public static IServiceCollection AddHostedServicesOrderModule(this IServiceCollection services)
+        => services
+            .AddScoped<PublishEventWorker>()
+            .AddScoped<PublishEventService>();
 }

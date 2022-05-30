@@ -14,6 +14,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplicationServices();
 builder.Services.AddOrderModule(appSettings);
+builder.Services.AddHostedServicesOrderModule();
 
 var app = builder.Build();
 
