@@ -10,23 +10,24 @@ namespace Dolcecuore.Services.Basket.HostedServices;
 
 public class PublishEventService
 {
-    private readonly ILogger<PublishEventService> _logger;
     private readonly IRepository<EventLog, long> _eventLogRepository;
     private readonly IMessageSender<AuditLogCreatedEvent> _auditLogCreatedEventSender;
     private readonly IMessageSender<BasketCheckedEvent> _basketCheckedEventSender;
-    private readonly IBasketRepository _basketRepository;
+    private readonly IMessageSender<BasketUpdatedEvent> _basketUpdatedEventSender;
+    private readonly IMessageSender<BasketDeletedEvent> _basketDeletedEventSender;
 
     public PublishEventService(
-        ILogger<PublishEventService> logger,
         IRepository<EventLog, long> eventLogRepository,
         IMessageSender<AuditLogCreatedEvent> auditLogCreatedEventSender,
-        IBasketRepository basketRepository, IMessageSender<BasketCheckedEvent> basketCheckedEventSender)
+        IMessageSender<BasketCheckedEvent> basketCheckedEventSender,
+        IMessageSender<BasketUpdatedEvent> basketUpdatedEventSender,
+        IMessageSender<BasketDeletedEvent> basketDeletedEventSender)
     {
-        _logger = logger;
         _eventLogRepository = eventLogRepository;
         _auditLogCreatedEventSender = auditLogCreatedEventSender;
-        _basketRepository = basketRepository;
         _basketCheckedEventSender = basketCheckedEventSender;
+        _basketUpdatedEventSender = basketUpdatedEventSender;
+        _basketDeletedEventSender = basketDeletedEventSender;
     }
     
     public async Task<int> PublishEvents()
@@ -39,25 +40,32 @@ public class PublishEventService
 
         foreach (var eventLog in events)
         {
-            if (eventLog.EventType == "AUDIT_LOG_ENTRY_CREATED")
+            switch (eventLog.EventType)
             {
-                var logEntry = JsonSerializer.Deserialize<AuditLogEntry>(eventLog.Message);
-                await _auditLogCreatedEventSender.SendAsync(new AuditLogCreatedEvent(logEntry));
-            }
-            else if (eventLog.EventType == "BASKET_UPDATED")
-            {
-                var basket = JsonSerializer.Deserialize<Entities.Basket>(eventLog.Message);
-                
-            }
-            else if (eventLog.EventType == "BASKET_DELETED")
-            {
-                var basket = JsonSerializer.Deserialize<Entities.Basket>(eventLog.Message);
-                
-            }
-            else if (eventLog.EventType == "BASKET_CHECKED")
-            {
-                var order = JsonSerializer.Deserialize<Order>(eventLog.Message);
-                await _basketCheckedEventSender.SendAsync(new BasketCheckedEvent(order));
+                case "AUDIT_LOG_ENTRY_CREATED":
+                {
+                    var logEntry = JsonSerializer.Deserialize<AuditLogEntry>(eventLog.Message);
+                    await _auditLogCreatedEventSender.SendAsync(new AuditLogCreatedEvent(logEntry));
+                    break;
+                }
+                case "BASKET_UPDATED":
+                {
+                    var basket = JsonSerializer.Deserialize<Entities.Basket>(eventLog.Message);
+                    await _basketUpdatedEventSender.SendAsync(new BasketUpdatedEvent(basket));
+                    break;
+                }
+                case "BASKET_DELETED":
+                {
+                    var basket = JsonSerializer.Deserialize<Entities.Basket>(eventLog.Message);
+                    await _basketDeletedEventSender.SendAsync(new BasketDeletedEvent(basket));
+                    break;
+                }
+                case "BASKET_CHECKED":
+                {
+                    var order = JsonSerializer.Deserialize<Order>(eventLog.Message);
+                    await _basketCheckedEventSender.SendAsync(new BasketCheckedEvent(order));
+                    break;
+                }
             }
 
             eventLog.Published = true;

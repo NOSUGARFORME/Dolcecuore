@@ -2,7 +2,6 @@ using System;
 using Dolcecuore.Application;
 using Dolcecuore.Services.Basket;
 using Dolcecuore.Services.Basket.ConfigurationOptions;
-using Dolcecuore.Services.Discount.Grpc.Protos;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

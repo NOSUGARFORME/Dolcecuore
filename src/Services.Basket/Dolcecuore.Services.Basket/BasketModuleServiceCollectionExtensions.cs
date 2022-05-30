@@ -41,6 +41,8 @@ public static class BasketModuleServiceCollectionExtensions
         services.AddMessageHandlers(Assembly.GetExecutingAssembly());
         
         services
+            .AddMessageBusSender<BasketUpdatedEvent>(appSettings.MessageBroker)
+            .AddMessageBusSender<BasketDeletedEvent>(appSettings.MessageBroker)
             .AddMessageBusSender<BasketCheckedEvent>(appSettings.MessageBroker)
             .AddMessageBusSender<AuditLogCreatedEvent>(appSettings.MessageBroker);
 
