@@ -3,8 +3,6 @@ using Dolcecuore.Domain.Infrastructure.MessageBrokers;
 using Dolcecuore.Domain.Repositories;
 using Dolcecuore.Services.Basket.DTOs;
 using Dolcecuore.Services.Basket.Entities;
-using Dolcecuore.Services.Basket.Repositories.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace Dolcecuore.Services.Basket.HostedServices;
 
@@ -19,15 +17,15 @@ public class PublishEventService
     public PublishEventService(
         IRepository<EventLog, long> eventLogRepository,
         IMessageSender<AuditLogCreatedEvent> auditLogCreatedEventSender,
-        IMessageSender<BasketCheckedEvent> basketCheckedEventSender,
         IMessageSender<BasketUpdatedEvent> basketUpdatedEventSender,
-        IMessageSender<BasketDeletedEvent> basketDeletedEventSender)
+        IMessageSender<BasketDeletedEvent> basketDeletedEventSender,
+        IMessageSender<BasketCheckedEvent> basketCheckedEventSender)
     {
         _eventLogRepository = eventLogRepository;
         _auditLogCreatedEventSender = auditLogCreatedEventSender;
-        _basketCheckedEventSender = basketCheckedEventSender;
         _basketUpdatedEventSender = basketUpdatedEventSender;
         _basketDeletedEventSender = basketDeletedEventSender;
+        _basketCheckedEventSender = basketCheckedEventSender;
     }
     
     public async Task<int> PublishEvents()

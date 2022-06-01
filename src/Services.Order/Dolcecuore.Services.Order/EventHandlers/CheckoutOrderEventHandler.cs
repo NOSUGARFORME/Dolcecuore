@@ -24,14 +24,14 @@ public class CheckoutOrderEventHandler : IDomainEventHandler<EntityCreatedEvent<
         {
             // UserId =
             CreatedDateTime = domainEvent.EventDateTime,
-            Action = "CHECKED_ORDER",
+            Action = "CREATED_ORDER",
             ObjectId = domainEvent.Entity.Id.ToString(),
             Log = domainEvent.Entity.AsJsonString()
         }), cancellationToken);
 
         await _eventLogRepository.AddOrUpdateAsync(new EventLog
         {
-            EventType = "ORDER_CHECKED",
+            EventType = "ORDER_CREATED",
             // TriggeredById = 
             CreatedDateTime = domainEvent.EventDateTime,
             ObjectId = domainEvent.Entity.Id.ToString(),

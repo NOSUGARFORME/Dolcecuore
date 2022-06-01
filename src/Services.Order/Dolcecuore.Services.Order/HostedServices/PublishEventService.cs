@@ -10,13 +10,16 @@ public class PublishEventService
 {
     private readonly IRepository<EventLog, long> _eventLogRepository;
     private readonly IMessageSender<AuditLogCreatedEvent> _auditLogCreatedEventSender;
+    private readonly IMessageSender<OrderCreatedEvent> _orderCreatedEventSender;
 
     public PublishEventService(
         IRepository<EventLog, long> eventLogRepository,
-        IMessageSender<AuditLogCreatedEvent> auditLogCreatedEventSender)
+        IMessageSender<AuditLogCreatedEvent> auditLogCreatedEventSender,
+        IMessageSender<OrderCreatedEvent> orderCreatedEventSender)
     {
         _eventLogRepository = eventLogRepository;
         _auditLogCreatedEventSender = auditLogCreatedEventSender;
+        _orderCreatedEventSender = orderCreatedEventSender;
     }
     
     public async Task<int> PublishEvents()
@@ -34,9 +37,10 @@ public class PublishEventService
                 var logEntry = JsonSerializer.Deserialize<AuditLogEntry>(eventLog.Message);
                 await _auditLogCreatedEventSender.SendAsync(new AuditLogCreatedEvent(logEntry));
             }
-            else
+            else if (eventLog.EventType == "ORDER_CREATED")
             {
-                // TODO: Handle other events
+                var order = JsonSerializer.Deserialize<Entities.Order>(eventLog.Message);
+                await _orderCreatedEventSender.SendAsync(new OrderCreatedEvent(order));
             }
 
             eventLog.Published = true;

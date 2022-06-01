@@ -2,6 +2,7 @@ using System.Reflection;
 using Dolcecuore.Application;
 using Dolcecuore.Domain.Events;
 using Dolcecuore.Domain.Repositories;
+using Dolcecuore.Services.Order.Commands;
 using Dolcecuore.Services.Order.ConfigureOptions;
 using Dolcecuore.Services.Order.DTOs;
 using Dolcecuore.Services.Order.Entities;
@@ -35,7 +36,10 @@ public static class OrderModuleServiceCollectionExtensions
 
         services.AddMessageHandlers(Assembly.GetExecutingAssembly());
         
-        services.AddMessageBusSender<AuditLogCreatedEvent>(appSettings.MessageBroker);
+        services
+            .AddMessageBusSender<AuditLogCreatedEvent>(appSettings.MessageBroker)
+            .AddMessageBusSender<OrderCreatedEvent>(appSettings.MessageBroker)
+            .AddMessageBusReceiver<BasketCheckedEvent>(appSettings.MessageBroker);
 
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
@@ -50,6 +54,7 @@ public static class OrderModuleServiceCollectionExtensions
 
     public static IServiceCollection AddHostedServicesOrderModule(this IServiceCollection services)
         => services
-            .AddScoped<PublishEventWorker>()
+            .AddHostedService<MessageBusReceiver>()
+            .AddHostedService<PublishEventWorker>()
             .AddScoped<PublishEventService>();
 }

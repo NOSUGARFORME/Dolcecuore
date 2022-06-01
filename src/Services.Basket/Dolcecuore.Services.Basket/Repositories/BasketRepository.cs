@@ -19,7 +19,7 @@ namespace Dolcecuore.Services.Basket.Repositories
 
         public async Task<Entities.Basket> GetBasket(string userName)
         {
-            ValidationException.Requires(string.IsNullOrWhiteSpace(userName), "Invalid user name");
+            ValidationException.Requires(!string.IsNullOrWhiteSpace(userName), "Invalid user name");
             var cart = await _cache.GetStringAsync(userName);
             return string.IsNullOrWhiteSpace(cart) ? null : JsonConvert.DeserializeObject<Entities.Basket>(cart);
         }
