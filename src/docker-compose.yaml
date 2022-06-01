@@ -39,6 +39,12 @@ services:
     build:
       context: .
       dockerfile: Services.Order/Dolcecuore.Services.Order.Api/Dockerfile
+      
+  dolcecuore.gateways.webapi:
+    image: ${DOCKER_REGISTRY-}dolcecuoregatewayswebapi
+    build:
+      context: .
+      dockerfile: Gateways.WebAPI/Dockerfile
   
   rabbitmq:
     image: rabbitmq:3-management-alpine

@@ -91,6 +91,20 @@ services:
       - mssql
     ports:
       - "8005:80"
+        
+  dolcecuore.gateways.webapi:
+    container_name: webapi
+    environment :
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Ocelot__DefaultDownstreamScheme="http"
+      - Ocelot__Routes__Catalog__Downstream="http://catalog.api"
+      - Ocelot__Routes__Basket__Downstream="http://basket.api"
+      - Ocelot__Routes__Discount__Downstream="http://discount.api"
+      - Ocelot__Routes__Order__Downstream="http://order.api"
+    ports :
+      - "9002:80"
+    depends_on :
+      - db
 
   rabbitmq:
     container_name: rabbitmq
