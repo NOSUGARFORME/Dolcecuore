@@ -1,5 +1,5 @@
 using System;
-using Dolcecuore.Application;
+using Dolcecuore.Infrastructure.Logging;
 using Dolcecuore.Services.Catalog.Api;
 using Dolcecuore.Services.Catalog.Api.ConfigurationOptions;
 using Microsoft.AspNetCore.Builder;
@@ -14,6 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 var appSettings = new AppSettings();
 builder.Configuration.Bind(appSettings);
 
+builder.WebHost.UseLogger(appSettings.Serilog);
+
 builder.Services.AddApplicationServices();
 
 builder.Services.AddCatalogModule(appSettings);
@@ -22,7 +24,7 @@ builder.Services.AddHostedServicesCatalogModule();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Dolcecuore.Services.Catalog.Api", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo {Title = "Dolcecuore.Services.Catalog.Api", Version = "v1"});
 });
 
 var app = builder.Build();
@@ -33,10 +35,7 @@ Policy.Handle<Exception>().WaitAndRetry(new[]
         TimeSpan.FromSeconds(20),
         TimeSpan.FromSeconds(30),
     })
-    .Execute(() =>
-    {
-        app.MigrateProductDb();
-    });
+    .Execute(() => { app.MigrateProductDb(); });
 
 if (app.Environment.IsDevelopment())
 {
@@ -49,9 +48,6 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
+app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
 app.Run();

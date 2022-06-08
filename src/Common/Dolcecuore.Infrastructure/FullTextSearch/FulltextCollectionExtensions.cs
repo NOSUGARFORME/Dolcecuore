@@ -1,3 +1,4 @@
+using Dolcecuore.Infrastructure.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Nest;
 
@@ -9,14 +10,14 @@ public static class FulltextCollectionExtensions
     
     public static IServiceCollection AddFullTextSearch<TModel>(
         this IServiceCollection services,
-        FullTextSearchOptions searchOptions)
+        ElasticsearchOptions searchOptions)
         where TModel : class
     {
         var indexName = $"{typeof(TModel).Name.ToLower()}_index";
 
         if (_elasticClient == null)
         {
-            var node = new Uri(searchOptions.ConnectionString);
+            var node = new Uri(searchOptions.Host);
             var settings = new ConnectionSettings(node)
                 .DefaultMappingFor<TModel>(s => s.IndexName(indexName));
 
