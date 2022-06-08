@@ -94,16 +94,16 @@ services:
         
   dolcecuore.gateways.webapi:
     container_name: webapi
-    environment :
+    environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - Ocelot__DefaultDownstreamScheme="http"
       - Ocelot__Routes__Catalog__Downstream="http://catalog.api"
       - Ocelot__Routes__Basket__Downstream="http://basket.api"
       - Ocelot__Routes__Discount__Downstream="http://discount.api"
       - Ocelot__Routes__Order__Downstream="http://order.api"
-    ports :
+    ports:
       - "9002:80"
-    depends_on :
+    depends_on:
       - db
 
   rabbitmq:
@@ -113,12 +113,33 @@ services:
       - "5672:5672"
       - "15672:15672"
         
-  portainer :
-    container_name : portainer
-    restart : always
-    ports :
+  portainer:
+    container_name: portainer
+    restart: always
+    ports:
       - "8080:8000"
       - "9000:9000"
-    volumes :
+    volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
+  
+  elasticsearch:
+    ports:
+      - "9200:9200"
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.type=single-node"
+  
+  kibana:
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+
+  logstash:
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch

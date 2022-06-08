@@ -35,9 +35,8 @@ public class PublishEventWorker : BackgroundService
                 int eventsCount;
                 using (var scope = _services.CreateScope())
                 {
-                    var emailService = scope.ServiceProvider.GetRequiredService<PublishEventService>();
-
-                    eventsCount = await emailService.PublishEvents();
+                    var service = scope.ServiceProvider.GetRequiredService<PublishEventService>();
+                    eventsCount = await service.PublishEvents();
                 }
 
                 if (eventsCount == 0)
