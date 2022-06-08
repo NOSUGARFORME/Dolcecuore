@@ -1,4 +1,3 @@
-
 using System.Reflection;
 using Dolcecuore.Application.Common;
 using Dolcecuore.Application.Common.Commands;
@@ -8,7 +7,7 @@ using Dolcecuore.Domain.Entities;
 using Dolcecuore.Domain.Events;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Dolcecuore.Application;
+namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ApplicationServicesExtensions
 {

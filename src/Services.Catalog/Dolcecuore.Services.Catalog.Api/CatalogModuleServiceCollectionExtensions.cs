@@ -3,12 +3,14 @@ using System.Reflection;
 using Dolcecuore.Application;
 using Dolcecuore.Domain.Events;
 using Dolcecuore.Domain.Repositories;
+using Dolcecuore.Infrastructure.Identity;
 using Dolcecuore.Services.Catalog.Api.ConfigurationOptions;
 using Dolcecuore.Services.Catalog.Api.DTOs;
 using Dolcecuore.Services.Catalog.Api.Entities;
 using Dolcecuore.Services.Catalog.Api.HostedServices;
 using Dolcecuore.Services.Catalog.Api.Repositories;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -37,6 +39,9 @@ public static class CatalogModuleServiceCollectionExtensions
         services.AddMessageHandlers(Assembly.GetExecutingAssembly());
 
         services.AddMessageBusSender<AuditLogCreatedEvent>(appSettings.MessageBroker);
+        
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        services.AddScoped<ICurrentUser, CurrentUser>();
         
         return services;
     }

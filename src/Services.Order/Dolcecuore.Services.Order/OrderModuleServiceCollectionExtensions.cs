@@ -1,13 +1,14 @@
 using System.Reflection;
-using Dolcecuore.Application;
 using Dolcecuore.Domain.Events;
 using Dolcecuore.Domain.Repositories;
+using Dolcecuore.Infrastructure.Identity;
 using Dolcecuore.Services.Order.ConfigureOptions;
 using Dolcecuore.Services.Order.DTOs;
 using Dolcecuore.Services.Order.Entities;
 using Dolcecuore.Services.Order.HostedServices;
 using Dolcecuore.Services.Order.Repositories;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -35,9 +36,15 @@ public static class OrderModuleServiceCollectionExtensions
 
         services.AddMessageHandlers(Assembly.GetExecutingAssembly());
         
-        services.AddMessageBusSender<AuditLogCreatedEvent>(appSettings.MessageBroker);
+        services
+            .AddMessageBusSender<AuditLogCreatedEvent>(appSettings.MessageBroker)
+            .AddMessageBusSender<OrderCreatedEvent>(appSettings.MessageBroker)
+            .AddMessageBusReceiver<BasketCheckedEvent>(appSettings.MessageBroker);
 
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        services.AddScoped<ICurrentUser, CurrentUser>();
 
         return services;
     }
@@ -50,6 +57,7 @@ public static class OrderModuleServiceCollectionExtensions
 
     public static IServiceCollection AddHostedServicesOrderModule(this IServiceCollection services)
         => services
-            .AddScoped<PublishEventWorker>()
+            .AddHostedService<MessageBusReceiver>()
+            .AddHostedService<PublishEventWorker>()
             .AddScoped<PublishEventService>();
 }

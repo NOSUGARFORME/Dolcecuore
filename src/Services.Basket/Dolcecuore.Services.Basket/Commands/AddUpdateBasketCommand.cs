@@ -15,7 +15,7 @@ public class AddUpdateBasketCommandHandler : ICommandHandler<AddUpdateBasketComm
 
     public AddUpdateBasketCommandHandler(
         IDomainEvents domainEvents,
-         IDiscountGrpcService discountGrpcService,
+        IDiscountGrpcService discountGrpcService,
         IBasketRepository basketRepository)
     {
         _domainEvents = domainEvents;

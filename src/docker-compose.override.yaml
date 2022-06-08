@@ -46,9 +46,17 @@ services:
     environment:
       - Redis__ConnectionString=basketdb:6379
       - ASPNETCORE_ENVIRONMENT=Development
-      - Grpc__DiscountUrl=http://dolcecuore.services.discount.grpc
+      - ConnectionStrings__Dolcecuore=Server=mssql;Database=Dolcecuore.Microservices.BasketEvents;User Id=sa;Password=sqladmin123!@#;MultipleActiveResultSets=true
+      - Services__Grpc__Discount=http://dolcecuore.services.discount.grpc
+      - MessageBroker__Provider=RabbitMQ
+      - MessageBroker__RabbitMQ__HostName=rabbitmq
+      - Caching__Distributed__Provider=Redis
+      - Caching__Distributed__Redis__Configuration=basketdb:6379
     depends_on:
         - basketdb
+        - mssql
+        - dolcecuore.services.order.api
+        - dolcecuore.services.discount.grpc
     ports:
       - "8002:80"
 
@@ -76,11 +84,27 @@ services:
     container_name: order.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__OrderingConnectionString=Server=mssql;Database=Dolcecuore.Microservices.Order;User Id=sa;Password=sqladmin123!@#;MultipleActiveResultSets=true
+      - ConnectionStrings__Dolcecuore=Server=mssql;Database=Dolcecuore.Microservices.Orders;User Id=sa;Password=sqladmin123!@#;MultipleActiveResultSets=true
+      - MessageBroker__Provider=RabbitMQ
+      - MessageBroker__RabbitMQ__HostName=rabbitmq
     depends_on:
       - mssql
     ports:
       - "8005:80"
+        
+  dolcecuore.gateways.webapi:
+    container_name: webapi
+    environment :
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Ocelot__DefaultDownstreamScheme="http"
+      - Ocelot__Routes__Catalog__Downstream="http://catalog.api"
+      - Ocelot__Routes__Basket__Downstream="http://basket.api"
+      - Ocelot__Routes__Discount__Downstream="http://discount.api"
+      - Ocelot__Routes__Order__Downstream="http://order.api"
+    ports :
+      - "9002:80"
+    depends_on :
+      - db
 
   rabbitmq:
     container_name: rabbitmq
