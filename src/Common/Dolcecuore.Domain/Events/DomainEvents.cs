@@ -7,11 +7,12 @@ public class DomainEvents : IDomainEvents
 {
     private static readonly List<Type> Handlers = new();
     private readonly IServiceProvider _serviceProvider;
-    
+
     public static void RegisterHandlers(Assembly assembly, IServiceCollection services)
     {
         var types = assembly.GetTypes()
-            .Where(x => x.GetInterfaces().Any(y => y.IsGenericType && y.GetGenericTypeDefinition() == typeof(IDomainEventHandler<>)))
+            .Where(x => x.GetInterfaces().Any(y =>
+                y.IsGenericType && y.GetGenericTypeDefinition() == typeof(IDomainEventHandler<>)))
             .ToList();
 
         foreach (var type in types)
@@ -21,12 +22,12 @@ public class DomainEvents : IDomainEvents
 
         Handlers.AddRange(types);
     }
-    
+
     public DomainEvents(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
     }
-    
+
     public async Task DispatchAsync(IDomainEvent domainEvent, CancellationToken cancellationToken = default)
     {
         foreach (var handlerType in Handlers)
@@ -38,7 +39,7 @@ public class DomainEvents : IDomainEvents
 
             if (!canHandleEvent) continue;
             dynamic handler = _serviceProvider.GetService(handlerType);
-            await handler.HandleAsync((dynamic)domainEvent, cancellationToken);
+            await handler.HandleAsync((dynamic) domainEvent, cancellationToken);
         }
     }
 }

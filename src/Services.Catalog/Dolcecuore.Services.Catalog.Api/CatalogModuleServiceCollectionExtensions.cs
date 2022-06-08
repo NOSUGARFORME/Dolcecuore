@@ -1,13 +1,14 @@
 using System;
 using System.Reflection;
-using Dolcecuore.Application;
 using Dolcecuore.Domain.Events;
 using Dolcecuore.Domain.Repositories;
+using Dolcecuore.Infrastructure.FullTextSearch;
 using Dolcecuore.Infrastructure.Identity;
 using Dolcecuore.Services.Catalog.Api.ConfigurationOptions;
 using Dolcecuore.Services.Catalog.Api.DTOs;
 using Dolcecuore.Services.Catalog.Api.Entities;
 using Dolcecuore.Services.Catalog.Api.HostedServices;
+using Dolcecuore.Services.Catalog.Api.Models;
 using Dolcecuore.Services.Catalog.Api.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -42,6 +43,8 @@ public static class CatalogModuleServiceCollectionExtensions
         
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddScoped<ICurrentUser, CurrentUser>();
+
+        services.AddFullTextSearch<ProductFullTextModel>(appSettings.Elasticsearch);
         
         return services;
     }
