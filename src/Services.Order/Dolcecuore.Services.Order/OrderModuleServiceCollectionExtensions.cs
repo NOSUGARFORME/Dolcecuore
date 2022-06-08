@@ -1,14 +1,14 @@
 using System.Reflection;
-using Dolcecuore.Application;
 using Dolcecuore.Domain.Events;
 using Dolcecuore.Domain.Repositories;
-using Dolcecuore.Services.Order.Commands;
+using Dolcecuore.Infrastructure.Identity;
 using Dolcecuore.Services.Order.ConfigureOptions;
 using Dolcecuore.Services.Order.DTOs;
 using Dolcecuore.Services.Order.Entities;
 using Dolcecuore.Services.Order.HostedServices;
 using Dolcecuore.Services.Order.Repositories;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -42,6 +42,9 @@ public static class OrderModuleServiceCollectionExtensions
             .AddMessageBusReceiver<BasketCheckedEvent>(appSettings.MessageBroker);
 
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        services.AddScoped<ICurrentUser, CurrentUser>();
 
         return services;
     }

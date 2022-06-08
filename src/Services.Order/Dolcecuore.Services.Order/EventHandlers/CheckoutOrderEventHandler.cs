@@ -2,6 +2,7 @@ using Dolcecuore.Application.Common;
 using Dolcecuore.CrossCuttingConcerns.ExtensionsMethods;
 using Dolcecuore.Domain.Events;
 using Dolcecuore.Domain.Repositories;
+using Dolcecuore.Infrastructure.Identity;
 using Dolcecuore.Services.Order.Commands;
 using Dolcecuore.Services.Order.Entities;
 
@@ -11,18 +12,22 @@ public class CheckoutOrderEventHandler : IDomainEventHandler<EntityCreatedEvent<
 {
     private readonly Dispatcher _dispatcher;
     private readonly IRepository<EventLog, long> _eventLogRepository;
+    private readonly ICurrentUser _currentUser;
 
-    public CheckoutOrderEventHandler(Dispatcher dispatcher, IRepository<EventLog, long> eventLogRepository)
+    public CheckoutOrderEventHandler(Dispatcher dispatcher, IRepository<EventLog, long> eventLogRepository,
+        ICurrentUser currentUser)
     {
         _dispatcher = dispatcher;
         _eventLogRepository = eventLogRepository;
+        _currentUser = currentUser;
     }
-    
-    public async Task HandleAsync(EntityCreatedEvent<Entities.Order> domainEvent, CancellationToken cancellationToken = default)
+
+    public async Task HandleAsync(EntityCreatedEvent<Entities.Order> domainEvent,
+        CancellationToken cancellationToken = default)
     {
         await _dispatcher.DispatchAsync(new AddAuditLogEntryCommand(new AuditLogEntry
         {
-            // UserId =
+            UserId = _currentUser.IsAuthenticated ? _currentUser.UserId : Guid.Empty,
             CreatedDateTime = domainEvent.EventDateTime,
             Action = "CREATED_ORDER",
             ObjectId = domainEvent.Entity.Id.ToString(),
@@ -32,7 +37,7 @@ public class CheckoutOrderEventHandler : IDomainEventHandler<EntityCreatedEvent<
         await _eventLogRepository.AddOrUpdateAsync(new EventLog
         {
             EventType = "ORDER_CREATED",
-            // TriggeredById = 
+            TriggeredById = _currentUser.UserId,
             CreatedDateTime = domainEvent.EventDateTime,
             ObjectId = domainEvent.Entity.Id.ToString(),
             Message = domainEvent.Entity.AsJsonString(),
