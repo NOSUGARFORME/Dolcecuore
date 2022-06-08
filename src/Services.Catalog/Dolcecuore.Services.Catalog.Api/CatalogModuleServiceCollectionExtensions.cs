@@ -44,7 +44,7 @@ public static class CatalogModuleServiceCollectionExtensions
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddScoped<ICurrentUser, CurrentUser>();
 
-        services.AddFullTextSearch<ProductFullTextModel>(appSettings.FullText);
+        services.AddFullTextSearch<ProductFullTextModel>(appSettings.Elasticsearch);
         
         return services;
     }
